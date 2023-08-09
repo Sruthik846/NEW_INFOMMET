@@ -1,0 +1,11 @@
+.video-container {
+    width: 100%; /* Set the width of the video container */
+    height: 400px; /* Set the height of the video container */
+    overflow: hidden;
+  }
+  
+  /* Video Styles */
+  video {
+    width: 100%; /* Ensure the video fills the width of the container */
+    height: 100%; /* Ensure the video fills the height of the container */
+  }

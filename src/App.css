@@ -1,0 +1,28 @@
+.App {
+  text-align: center;
+}
+
+.bottom-navigation {
+  bottom: 15px;
+  left: 20px;
+  right: 20px;
+  border-radius: 15px;
+  border: 1px solid gainsboro;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #e5e7eb inset !important;
+}input:-webkit-autofill{
+  -webkit-text-fill-color: black !important;
+}
+
+.date-input-group .date-input-icon {
+  @apply text-red-500; 
+}
+
+
+
+
