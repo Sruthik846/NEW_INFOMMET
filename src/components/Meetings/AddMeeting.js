@@ -241,7 +241,7 @@ function AddMeeting() {
         <div className=" justify-center md:flex hidden lg:py-10 md:py-10">
           <Link to="/meeting" className="mt-6">
             <FontAwesomeIcon
-              meIcon
+              // meicon
               icon={faCircleArrowLeft}
               className="py-1 text-xl text-gray-300"
             />
@@ -255,9 +255,10 @@ function AddMeeting() {
           </div>
         </div>
         <form
-          className="space-y-6 p-6 lg:py-0 md:py-0 py-20"
+          className=" p-6 lg:py-0 md:py-0 py-20"
           onSubmit={(e) => onSubmit(e)}
         >
+          <div className="grid lg:grid-cols-2 lg:gap-2">
           <div className="flex items-center bg-gray-200 lg:bg-gray-800 md:bg-gray-800 border lg:border-gray-600 md:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
             <select
               id="halls"
@@ -265,7 +266,7 @@ function AddMeeting() {
               value={hall}
               onChange={(e) => onChangeFormdata(e)}
               required
-              defaultValue="option1"
+              // defaultValue="option1"
               className="flex-grow block w-full px-4 py-2 text-sm border bg-gray-200 lg:bg-gray-800 lg:border-none lg:text-gray-300 md:bg-gray-800 md:border-none md:text-gray-300 rounded-lg focus:outline-none focus:ring-opacity-40"
             >
               <option value="option1">
@@ -289,6 +290,7 @@ function AddMeeting() {
               placeholder="Date"
               required
             />
+          </div>
           </div>
 
           <div className="flex items-center bg-gray-200 lg:bg-gray-800 md:bg-gray-800 border lg:border-gray-600 md:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">

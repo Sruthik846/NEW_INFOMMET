@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../Context/UserContext";
@@ -8,8 +8,22 @@ import Cookies from "js-cookie";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showerrorMessage, setshowerrorMessage] = useState([]);
   const { updateUser } = useContext(UserContext);
+  const isAuth = localStorage.getItem('token') !== null;
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (!isAuth) {
+      // Redirect the user to the login page if not authenticated
+      navigate('/');
+    }
+    else{
+      navigate('/home');
+    }
+  }, [isAuth, navigate]);
+
+  
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -54,13 +68,55 @@ function Login() {
       navigate("/home");
       window.location.reload();
     } catch (err) {
-      console.error(err);
+      setshowerrorMessage(err.response["data"]['message']);
       navigate("/");
     }
   };
 
+
   return (
     <div className="relative flex flex-col justify-center overflow-hidden h-screen bg-white md:bg-gray-100 lg:bg-gray-100 ">
+
+{/* {showerrorMessage.length !== 0 && (
+          <div
+            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none p-6 md:p-8 lg:p-12 xl:p-16"
+            style={{ backdropFilter: "blur(5px)" }}
+          >
+            <div className="relative w-full max-w-md max-h-full">
+              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div className="p-6 text-center">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    className="mx-auto"
+                    style={{ width: "300px", height: "100px" }}
+                  >
+                    <source src={imageErrorUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <h3 className="mb-5 font-medium text-sm text-gray-500 dark:text-gray-400">
+                    {Object.keys(showerrorMessage).map((key) => (
+                      <p key={key}>
+                        <strong>{key}:</strong> {showerrorMessage[key]}
+                      </p>
+                    ))}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={handleErrorClose}
+                    style={{ background: "#263997" }}
+                    className="text-white bg-blue-800 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 text-sm rounded inline-flex items-center px-5 py-1 text-center mr-2"
+                  >
+                    Okay
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )} */}
+
+
       <div className="w-full p-6 m-auto rounded-md lg:max-w-sm flex  flex-col justify-center lg:shadow-lg bg-white">
         <img
           src="https://infolks.info/images/logo/logo-rc.svg"
@@ -105,6 +161,11 @@ function Login() {
               />
             </div>
           </div>
+          {showerrorMessage.length !== 0 && (
+            <div className="text-red-500 text-sm font-medium">
+              {showerrorMessage}
+            </div>
+          )}
           <div className="mt-6 pb-5">
             <button
               type="submit"

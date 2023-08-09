@@ -212,7 +212,7 @@ function EditMeeting() {
         <div className=" justify-center md:flex hidden lg:py-10 md:py-10">
           <Link to="/meeting" className="mt-6">
             <FontAwesomeIcon
-              meIcon
+              // meIcon
               icon={faCircleArrowLeft}
               className="py-1 text-xl text-gray-300"
             />
