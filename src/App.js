@@ -22,6 +22,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [restrictedLink, setLink] = useState(false);
   const token = localStorage.getItem('token');
+
   const restrictedLinks = {
     user: ['/users','/hall'], 
     admin: [],
@@ -44,6 +45,7 @@ function App() {
   if (isLoading) {
     return <Loading />;
   }
+ 
 
   return (
     <div className="App">

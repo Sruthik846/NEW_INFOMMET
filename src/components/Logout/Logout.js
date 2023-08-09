@@ -18,10 +18,11 @@ function Logout() {
       })
       .then((response) => {
         // console.log(response.data);
-        navigate("/");
+        
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         updateToken("");
+        navigate("/");
       })
       .catch((error) => console.error(error));
   };

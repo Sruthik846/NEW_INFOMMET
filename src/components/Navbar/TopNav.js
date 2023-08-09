@@ -181,7 +181,7 @@ function TopNav({ data, path }) {
           </div>
 
           <div className="md:hidden flex items-center">
-            <div className="outline-none mobile-menu-button hover:bg-blue hover:text-white">
+            <button className="outline-none mobile-menu-button hover:bg-blue hover:text-white">
               <Menu>
                 {({ open }) => (
                   <div className="relative">
@@ -221,7 +221,7 @@ function TopNav({ data, path }) {
                   </div>
                 )}
               </Menu>
-            </div>
+            </button>
           </div>
         </div>
       </div>

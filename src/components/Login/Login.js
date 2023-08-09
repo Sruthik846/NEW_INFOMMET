@@ -13,15 +13,15 @@ function Login() {
   const isAuth = localStorage.getItem('token') !== null;
   const navigate = useNavigate();
   
-  useEffect(() => {
-    if (!isAuth) {
-      // Redirect the user to the login page if not authenticated
-      navigate('/');
-    }
-    else{
-      navigate('/home');
-    }
-  }, [isAuth, navigate]);
+  // useEffect(() => {
+  //   if (!isAuth) {
+  //     // Redirect the user to the login page if not authenticated
+  //     navigate('/');
+  //   }
+  //   else{
+  //     navigate('/home');
+  //   }
+  // }, [isAuth, navigate]);
 
   
   const [formData, setFormData] = useState({
