@@ -54,9 +54,10 @@ function Login() {
           Cookies.set("ifid", response.data["user"]["if_id"]);
           Cookies.set("department", response.data["user"]["department"]);
           Cookies.set("user_type", response.data["user"]["user_type"]);
+          window.location.href = '/home';
+          // navigate("/home");
+          // window.location.reload();
         });
-      navigate("/home");
-      // window.location.reload();
     } catch (err) {
       setshowerrorMessage(err.response["data"]["message"]);
       navigate("/");
@@ -168,6 +169,7 @@ function Login() {
                   onChange={(e) => onChange(e)}
                   className="flex-grow block w-full text-gray-800 px-4 py-2 mt-2 text-sm border bg-gray-200 rounded-lg focus:outline-none focus:ring-opacity-40"
                   placeholder="Password"
+                  autoComplete="off"
                   required
                 />
                 <div className="ml-2 text-gray-500">

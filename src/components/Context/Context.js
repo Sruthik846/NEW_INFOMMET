@@ -7,6 +7,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Retrieve token from local storage or any other persistent storage
+    // window.location.reload()
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
       setToken(savedToken);

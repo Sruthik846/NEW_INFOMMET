@@ -28,7 +28,7 @@ function Navbar() {
               HOME
             </h3>
           </div> */}
-          <div className="flex grid grid-cols-2 gap-1 md:order-2 items-right">
+          <button className=" grid grid-cols-2 gap-1 md:order-2 items-right">
             <Menu>
               {({ open }) => (
                 <div className="relative">
@@ -68,7 +68,7 @@ function Navbar() {
                 </div>
               )}
             </Menu>
-          </div>
+          </button>
         </div>
       </nav>
     </div>

@@ -26,7 +26,9 @@ import {
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [restrictedLink, setLink] = useState(false);
-  const token = localStorage.getItem("token");
+  const [token, setToken] = useState('');
+  // const token = localStorage.getItem("token");
+
 
   const restrictedLinks = {
     user: ["/users", "/hall"],
@@ -41,23 +43,36 @@ function App() {
   }
 
   useEffect(() => {
+   
+    
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
+  // if (isLoading){
+  //   <Loading></Loading>
+  // }
 
+
+  useEffect( () => {
+    const storedToken = localStorage.getItem('token');
+    console.log("Stored token",storedToken);
+    setToken(storedToken);
+    // setToken(storedToken || '');
+  }, []);
+ 
 
   return (
     <div className="App">
       <AuthProvider>
         <UserProvider>
           <Router>
-            { isLoading? (
+            { isLoading ? (
               <Loading></Loading>
-            ) : (
-              userType && !isLoading ? (
+            ) :(
+              userType ? (
                 <Routes>
                   <Route path="/loading" element={<Loading></Loading>} />
                   <Route
@@ -261,7 +276,9 @@ function App() {
                   ></Route>
                 </Routes>
               )
-            ) }
+            )
+            }
+            
           </Router>
         </UserProvider>
       </AuthProvider>
