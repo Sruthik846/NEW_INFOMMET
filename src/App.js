@@ -47,7 +47,6 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  console.log("isloading ",isLoading)
 
 
   return (
