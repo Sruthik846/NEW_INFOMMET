@@ -17,7 +17,7 @@ function Logout() {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         
         localStorage.removeItem("token");
         localStorage.removeItem("user");
