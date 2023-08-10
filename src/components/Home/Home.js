@@ -17,6 +17,7 @@ function Home() {
   };
 
   const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
+  
 
   return (
     <div className="font-sans">

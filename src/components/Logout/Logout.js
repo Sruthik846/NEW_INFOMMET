@@ -21,6 +21,7 @@ function Logout() {
         
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem('tokenExpirationTime');
         updateToken("");
         // window.location.reload();
         navigate("/");

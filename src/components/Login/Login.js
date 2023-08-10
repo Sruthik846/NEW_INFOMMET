@@ -44,6 +44,8 @@ function Login() {
           // console.log(response.data);
           const token = response.data["token"];
           localStorage.setItem("token", token);
+          const expirationTime = new Date().getTime() + 1 * 60 * 1000; // 2 hours in milliseconds
+          localStorage.setItem('tokenExpirationTime', expirationTime);
           const name = response.data["user"]["name"];
           const ifid = response.data["user"]["if_id"];
           const department = response.data["user"]["department"];
@@ -88,6 +90,9 @@ function Login() {
       window.removeEventListener("storage", handleAuthChange);
     };
   }, []);
+
+
+  
 
   return (
     <>
