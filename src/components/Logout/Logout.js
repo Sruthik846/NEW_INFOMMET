@@ -5,7 +5,7 @@ import { AuthContext } from "../Context/Context";
 import { useNavigate } from "react-router-dom";
 
 function Logout() {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("info_Authtoken");
   const { updateToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleLogout = async () => {
@@ -19,7 +19,7 @@ function Logout() {
       .then((response) => {
         // console.log(response.data);
         
-        localStorage.removeItem("token");
+        localStorage.removeItem("info_Authtoken");
         localStorage.removeItem("user");
         localStorage.removeItem('tokenExpirationTime');
         updateToken("");

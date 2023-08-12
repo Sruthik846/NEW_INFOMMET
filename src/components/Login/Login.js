@@ -43,7 +43,7 @@ function Login() {
         .then((response) => {
           // console.log(response.data);
           const token = response.data["token"];
-          localStorage.setItem("token", token);
+          localStorage.setItem("info_Authtoken", token);
           const expirationTime = new Date().getTime() + 1 * 60 * 1000; // 2 hours in milliseconds
           localStorage.setItem('tokenExpirationTime', expirationTime);
           const name = response.data["user"]["name"];
@@ -70,7 +70,7 @@ function Login() {
     // Function to handle authentication change
     const handleAuthChange = () => {
       // Check if the token is present
-      const authToken = localStorage.getItem("token");
+      const authToken = localStorage.getItem("info_Authtoken");
       if (authToken) {
         // Perform token validation logic if needed
         setAuthenticated(true);

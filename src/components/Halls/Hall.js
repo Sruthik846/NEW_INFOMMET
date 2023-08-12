@@ -14,7 +14,7 @@ function Hall() {
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("info_Authtoken");
 
   const [showDeletemodal, setshowDeletemodal] = useState(false);
   const [hallList, setHallList] = useState([]);

@@ -50,23 +50,26 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("info_Authtoken");
     setToken(storedToken);
   }, []);
 
 
-  const expirationTime = localStorage.getItem("tokenExpirationTime");
-  console.log(expirationTime, new Date().getTime())
-  if (
-    token &&
-    expirationTime &&
-    new Date().getTime() < parseInt(expirationTime)
-  ) {
-    console.log("Token exist");
-  } else {
-    console.log("Expired");
-  }
+  // const expirationTime = localStorage.getItem("tokenExpirationTime");
+  // console.log(expirationTime, new Date().getTime())
+  // if (
+  //   token &&
+  //   expirationTime &&
+  //   new Date().getTime() < parseInt(expirationTime)
+  // ) {
+  //   console.log("Token exist");
+  // } else {
+  //   console.log("Expired");
+  // }
 
+  // if ( new Date().getTime() < parseInt(expirationTime)){
+  //   console.log("EXPIREDDDDDDDDD")
+  // }
   return (
     <div className="App">
       <AuthProvider>

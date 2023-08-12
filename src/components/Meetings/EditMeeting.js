@@ -20,7 +20,7 @@ function EditMeeting() {
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("info_Authtoken");
   const location = useLocation();
   const data = location.state;
   const [editedItem, setEditedItem] = useState({ ...data });

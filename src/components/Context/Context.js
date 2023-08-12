@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Retrieve token from local storage or any other persistent storage
     // window.location.reload()
-    const savedToken = localStorage.getItem("token");
+    const savedToken = localStorage.getItem("info_Authtoken");
     if (savedToken) {
       setToken(savedToken);
     }
@@ -16,7 +16,7 @@ const AuthProvider = ({ children }) => {
 
   const updateToken = (newToken) => {
     setToken(newToken);
-    localStorage.setItem("token", newToken);
+    localStorage.setItem("info_Authtoken", newToken);
   };
 
   return (
