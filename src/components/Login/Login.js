@@ -29,7 +29,7 @@ function Login() {
       email,
       password,
     };
-    // console.log(newUser);
+    console.log(newUser);
     try {
       const config = {
         headers: {
@@ -44,19 +44,19 @@ function Login() {
           // console.log(response.data);
           const token = response.data["token"];
           localStorage.setItem("info_Authtoken", token);
-          const expirationTime = new Date().getTime() + 1 * 60 * 1000; // 2 hours in milliseconds
-          localStorage.setItem('tokenExpirationTime', expirationTime);
           const name = response.data["user"]["name"];
           const ifid = response.data["user"]["if_id"];
           const department = response.data["user"]["department"];
           const user_type = response.data["user"]["user_type"];
           updateUser({ name, ifid, department, user_type });
 
+          Cookies.set("email", newUser["email"]);
+          Cookies.set("password", newUser["password"]);
           Cookies.set("name", response.data["user"]["name"]);
           Cookies.set("ifid", response.data["user"]["if_id"]);
           Cookies.set("department", response.data["user"]["department"]);
           Cookies.set("user_type", response.data["user"]["user_type"]);
-          window.location.href = '/home';
+          window.location.href = "/home";
           // navigate("/home");
           // window.location.reload();
         });
@@ -91,54 +91,12 @@ function Login() {
     };
   }, []);
 
-
-  
-
   return (
     <>
       {authenticated ? (
         <Home></Home>
       ) : (
         <div className="relative flex flex-col justify-center overflow-hidden h-screen bg-white md:bg-gray-100 lg:bg-gray-100 ">
-          {/* {showerrorMessage.length !== 0 && (
-          <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none p-6 md:p-8 lg:p-12 xl:p-16"
-            style={{ backdropFilter: "blur(5px)" }}
-          >
-            <div className="relative w-full max-w-md max-h-full">
-              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <div className="p-6 text-center">
-                  <video
-                    autoPlay
-                    loop
-                    muted
-                    className="mx-auto"
-                    style={{ width: "300px", height: "100px" }}
-                  >
-                    <source src={imageErrorUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                  <h3 className="mb-5 font-medium text-sm text-gray-500 dark:text-gray-400">
-                    {Object.keys(showerrorMessage).map((key) => (
-                      <p key={key}>
-                        <strong>{key}:</strong> {showerrorMessage[key]}
-                      </p>
-                    ))}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={handleErrorClose}
-                    style={{ background: "#263997" }}
-                    className="text-white bg-blue-800 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 text-sm rounded inline-flex items-center px-5 py-1 text-center mr-2"
-                  >
-                    Okay
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
-
           <div className="w-full p-6 m-auto rounded-md lg:max-w-sm flex  flex-col justify-center lg:shadow-lg bg-white">
             <img
               src="https://infolks.info/images/logo/logo-rc.svg"

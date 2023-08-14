@@ -22,12 +22,12 @@ import {
   BrowserRouter as Router,
   Navigate,
 } from "react-router-dom";
-import Logout from "./components/Logout/Logout";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [restrictedLink, setLink] = useState(false);
   const [token, setToken] = useState("");
+
   // const token = localStorage.getItem("token");
 
   const restrictedLinks = {
@@ -54,22 +54,6 @@ function App() {
     setToken(storedToken);
   }, []);
 
-
-  // const expirationTime = localStorage.getItem("tokenExpirationTime");
-  // console.log(expirationTime, new Date().getTime())
-  // if (
-  //   token &&
-  //   expirationTime &&
-  //   new Date().getTime() < parseInt(expirationTime)
-  // ) {
-  //   console.log("Token exist");
-  // } else {
-  //   console.log("Expired");
-  // }
-
-  // if ( new Date().getTime() < parseInt(expirationTime)){
-  //   console.log("EXPIREDDDDDDDDD")
-  // }
   return (
     <div className="App">
       <AuthProvider>
