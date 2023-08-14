@@ -26,6 +26,9 @@ function Meetings() {
 
   // --------------------------- GET MEETING LIST --------------------------------
   useEffect(() => {
+    if(!token){
+      window.location.href = "/";
+    }
     const config = {
       headers: {
         "Content-Type": "application/json",

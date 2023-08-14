@@ -16,11 +16,13 @@ const AuthProvider = ({ children }) => {
     if (savedToken) {
       setToken(savedToken);
       generateToken();
+    } else {
+      // window.location.href = "/";
     }
   }, []);
 
   const generateToken = () => {
-    const expirationTime = new Date().getTime() +  2 * 60 * 60 * 1000; // 2 hours from now
+    const expirationTime = new Date().getTime() + 2 * 60 * 60 * 1000; // 2 hours from now
     return { value: token, expirationTime };
   };
 
@@ -58,7 +60,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const tokenExpirationTimeout = setTimeout(() => {
       handleTokenExpiration();
-    },  2 * 60 * 60 * 1000); // 2 hour
+    }, 2 * 60 * 60 * 1000); // 2 hour
 
     return () => {
       clearTimeout(tokenExpirationTimeout);

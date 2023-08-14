@@ -23,25 +23,24 @@ input:-webkit-autofill:active{
   @apply text-red-500; 
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 7px;
 }
 
-/* Track */
+
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
   background: #1e40af;
   border-radius: 5px;
 }
 
-/* Handle on hover */
+
 ::-webkit-scrollbar-thumb:hover {
-  background:  #4726c0;
-}
+  background:  #3518a0;
+} */
 
 
 

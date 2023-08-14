@@ -45,6 +45,9 @@ function EditMeeting() {
   // ---------------------- GET TIME SLOTS ---------------------------------------
 
   useEffect(() => {
+    if(!token){
+      window.location.href = "/";
+    }
     const config = {
       headers: {
         "Content-Type": "application/json",

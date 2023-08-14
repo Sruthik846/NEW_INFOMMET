@@ -27,6 +27,9 @@ function Hall() {
 
   // GET DATA
   useEffect(() => {
+    if(!token){
+      window.location.href = "/";
+    }
     axios
       .get(`${apiUrl}/api/hall`, {
         headers: {
