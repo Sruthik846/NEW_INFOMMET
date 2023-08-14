@@ -25,9 +25,9 @@ const AuthProvider = ({ children }) => {
   };
 
   const handleTokenExpiration = async () => {
-    if (!token.expirationTime) {
-      console.log("Expired");
+    if (!token || !token.expirationTime) {
       updateToken("");
+      // console.log("Expired");
       if (email && password) {
         const newUser = {
           email,
