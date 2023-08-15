@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, Route, Routes, Link } from "react-router-dom";
@@ -20,6 +20,12 @@ function AddUser() {
 
   const [showsuccessMessage, setshowsuccessMessage] = useState("");
   const [showerrorMessage, setshowerrorMessage] = useState([]);
+
+  useEffect(() => {
+    if(!token){
+      window.location.href = "/";
+    }
+  }, [token])
 
   // Success message close
   const handleClose = () => {

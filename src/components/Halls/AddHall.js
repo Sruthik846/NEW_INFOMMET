@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,12 @@ function AddHall() {
 
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
+
+  useEffect(() => {
+    if(!token){
+      window.location.href = "/";
+    }
+  }, [token])
 
   // Success message close
   const handleClose = () => {

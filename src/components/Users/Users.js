@@ -7,6 +7,8 @@ import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
+import Login from "../Login/Login";
 
 function Users() {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -27,6 +29,17 @@ function Users() {
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showAddmodal, setshowAddmodal] = React.useState(false);
 
+  const isAuthenticated = useSelector((state) => state.isAuthenticated);
+  console.log(isAuthenticated);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      console.log("COOKIE DELETED");
+      <Login></Login>;
+    }
+  }, [isAuthenticated]);
+
+  
+
   const handleSearch = (event) => {
     const searchTerm = event.target.value;
     setSearchTerm(searchTerm);
@@ -39,7 +52,7 @@ function Users() {
   };
 
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
     const config = {
@@ -80,10 +93,7 @@ function Users() {
       },
     };
     axios
-      .delete(
-        `${apiUrl}/api/user/${selectedItemId}`,
-        config
-      )
+      .delete(`${apiUrl}/api/user/${selectedItemId}`, config)
       .then((response) => {
         // console.log(response.data);
         deleteDictById(selectedItemId);
@@ -122,10 +132,7 @@ function Users() {
 
     updatedItem.password = updatedItem.plain_password;
     axios
-      .put(
-        `${apiUrl}/api/user/${updatedItem["id"]}`,
-        updatedItem
-      )
+      .put(`${apiUrl}/api/user/${updatedItem["id"]}`, updatedItem)
       .then((response) => {
         // console.log(response.data);
         updateDictionary(updatedItem["id"], updatedItem);

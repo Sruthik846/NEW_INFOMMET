@@ -8,6 +8,7 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [token, setToken] = useState("");
 
+  
   const email = Cookies.get("email");
   const password = Cookies.get("password");
 

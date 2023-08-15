@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import BottomNavigation from "../Navbar/BottomNavigation";
@@ -29,6 +29,12 @@ function EditUser() {
 
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
+
+  useEffect(() => {
+    if(!token){
+      window.location.href = "/";
+    }
+  }, [token])
 
   // Success message close
   const handleClose = () => {

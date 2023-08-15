@@ -16,6 +16,8 @@ import EditUser from "./components/Users/EditUser";
 import AddUser from "./components/Users/AddUser";
 import AddMeeting from "./components/Meetings/AddMeeting";
 import EditMeeting from "./components/Meetings/EditMeeting";
+import { Provider, useSelector } from 'react-redux';
+import store from "./store";
 import {
   Route,
   Routes,
@@ -28,7 +30,7 @@ function App() {
   const [restrictedLink, setLink] = useState(false);
   const [token, setToken] = useState("");
 
-  // const token = localStorage.getItem("token");
+
 
   const restrictedLinks = {
     user: ["/users", "/hall"],
@@ -56,6 +58,7 @@ function App() {
 
   return (
     <div className="App">
+      <Provider store={store}>
       <AuthProvider>
         <UserProvider>
           <Router>
@@ -268,6 +271,7 @@ function App() {
           </Router>
         </UserProvider>
       </AuthProvider>
+      </Provider>
     </div>
   );
 }
