@@ -17,9 +17,7 @@ const AuthProvider = ({ children }) => {
     if (savedToken) {
       setToken(savedToken);
       generateToken();
-    } else {
-      // window.location.href = "/";
-    }
+    } 
   }, []);
 
   const generateToken = () => {
