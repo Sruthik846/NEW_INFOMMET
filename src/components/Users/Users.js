@@ -30,15 +30,13 @@ function Users() {
   const [showAddmodal, setshowAddmodal] = React.useState(false);
 
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
-  console.log(isAuthenticated);
   useEffect(() => {
+    // console.log(isAuthenticated);
     if (!isAuthenticated) {
       console.log("COOKIE DELETED");
       <Login></Login>;
     }
   }, [isAuthenticated]);
-
-  
 
   const handleSearch = (event) => {
     const searchTerm = event.target.value;
@@ -48,7 +46,6 @@ function Users() {
       user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setSearchResults(filteredUsers);
-    // console.log(filteredUsers);
   };
 
   useEffect(() => {

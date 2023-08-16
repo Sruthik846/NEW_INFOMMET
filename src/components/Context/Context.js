@@ -4,11 +4,9 @@ import axios from "axios";
 import Login from "../Login/Login";
 
 const AuthContext = createContext();
-
 const AuthProvider = ({ children }) => {
   const [token, setToken] = useState("");
 
-  
   const email = Cookies.get("email");
   const password = Cookies.get("password");
 
@@ -17,7 +15,7 @@ const AuthProvider = ({ children }) => {
     if (savedToken) {
       setToken(savedToken);
       generateToken();
-    } 
+    }
   }, []);
 
   const generateToken = () => {
@@ -28,8 +26,8 @@ const AuthProvider = ({ children }) => {
   const handleTokenExpiration = async () => {
     if (!token || !token.expirationTime) {
       updateToken("");
-      // console.log("Expired");
-      // If token is expired check for user exist . If user regenerate token , else redirect to login page
+      console.log("Expired");
+      // If token is expired check for user exist. If user regenerate token , else redirect to login page
       if (email && password) {
         const newUser = {
           email,

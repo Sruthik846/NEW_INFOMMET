@@ -6,7 +6,6 @@ import Users from "./components/Users/Users";
 import Meetings from "./components/Meetings/Meetings";
 import Hall from "./components/Halls/Hall";
 import { AuthProvider } from "./components/Context/Context";
-import { UserProvider } from "./components/Context/UserContext";
 import Accesdenied from "./components/Error/404Error";
 import Cookies from "js-cookie";
 import Loading from "./components/Login/Loading";
@@ -16,8 +15,10 @@ import EditUser from "./components/Users/EditUser";
 import AddUser from "./components/Users/AddUser";
 import AddMeeting from "./components/Meetings/AddMeeting";
 import EditMeeting from "./components/Meetings/EditMeeting";
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from "react-redux";
 import store from "./store";
+import { CookiesProvider } from "react-cookie";
+import CookieMonitorMiddleware from "./CookieMonitorMiddleware";
 import {
   Route,
   Routes,
@@ -29,8 +30,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [restrictedLink, setLink] = useState(false);
   const [token, setToken] = useState("");
-
-
 
   const restrictedLinks = {
     user: ["/users", "/hall"],
@@ -58,220 +57,263 @@ function App() {
 
   return (
     <div className="App">
-      <Provider store={store}>
-      <AuthProvider>
-        <UserProvider>
-          <Router>
-            {isLoading ? (
-              <Loading></Loading>
-            ) : userType ? (
-              <Routes>
-                <Route path="/loading" element={<Loading></Loading>} />
-                <Route
-                  path="/home"
-                  element={token ? <Home></Home> : <Navigate to="/"></Navigate>}
-                />
-                <Route
-                  path="/error"
-                  element={<Accesdenied></Accesdenied>}
-                ></Route>
-                <Route path="/" element={<Login></Login>}></Route>
-                {restrictedLink === false ? (
-                  <Route
-                    path="/users"
-                    element={
-                      token ? <Users></Users> : <Navigate to="/"></Navigate>
-                    }
-                  ></Route>
-                ) : (
-                  <Route
-                    path="/users"
-                    element={<Accesdenied></Accesdenied>}
-                  ></Route>
-                )}
-
-                <Route
-                  path="/meeting"
-                  element={
-                    token ? <Meetings></Meetings> : <Navigate to="/"></Navigate>
-                  }
-                ></Route>
-                <Route
-                  path="/addmeeting"
-                  element={
-                    token ? (
-                      <AddMeeting></AddMeeting>
+      <CookiesProvider>
+        <CookieMonitorMiddleware>
+          <Provider store={store}>
+            <AuthProvider>
+              <Router>
+                {isLoading ? (
+                  <Loading></Loading>
+                ) : userType ? (
+                  <Routes>
+                    <Route path="/loading" element={<Loading></Loading>} />
+                    <Route
+                      path="/home"
+                      element={
+                        token ? <Home></Home> : <Navigate to="/"></Navigate>
+                      }
+                    />
+                    <Route
+                      path="/error"
+                      element={<Accesdenied></Accesdenied>}
+                    ></Route>
+                    <Route path="/" element={<Login></Login>}></Route>
+                    {restrictedLink === false ? (
+                      <Route
+                        path="/users"
+                        element={
+                          token ? <Users></Users> : <Navigate to="/"></Navigate>
+                        }
+                      ></Route>
                     ) : (
-                      <Navigate to="/"></Navigate>
-                    )
-                  }
-                ></Route>
-                <Route
-                  path="/editmeeting"
-                  element={
-                    token ? (
-                      <EditMeeting></EditMeeting>
+                      <Route
+                        path="/users"
+                        element={<Accesdenied></Accesdenied>}
+                      ></Route>
+                    )}
+
+                    <Route
+                      path="/meeting"
+                      element={
+                        token ? (
+                          <Meetings></Meetings>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                    <Route
+                      path="/addmeeting"
+                      element={
+                        token ? (
+                          <AddMeeting></AddMeeting>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                    <Route
+                      path="/editmeeting"
+                      element={
+                        token ? (
+                          <EditMeeting></EditMeeting>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+
+                    {restrictedLink === false ? (
+                      <Route
+                        path="/hall"
+                        element={
+                          token ? <Hall></Hall> : <Navigate to="/"></Navigate>
+                        }
+                      ></Route>
                     ) : (
-                      <Navigate to="/"></Navigate>
-                    )
-                  }
-                ></Route>
-
-                {restrictedLink === false ? (
-                  <Route
-                    path="/hall"
-                    element={
-                      token ? <Hall></Hall> : <Navigate to="/"></Navigate>
-                    }
-                  ></Route>
-                ) : (
-                  <Route
-                    path="/hall"
-                    element={<Accesdenied></Accesdenied>}
-                  ></Route>
-                )}
-                {restrictedLink === false ? (
-                  <Route
-                    path="/addhall"
-                    element={
-                      token ? <AddHall></AddHall> : <Navigate to="/"></Navigate>
-                    }
-                  ></Route>
-                ) : (
-                  <Route
-                    path="/addhall"
-                    element={<Accesdenied></Accesdenied>}
-                  ></Route>
-                )}
-
-                {restrictedLink === false ? (
-                  <Route
-                    path="/edithall"
-                    element={
-                      token ? (
-                        <EditHall></EditHall>
-                      ) : (
-                        <Navigate to="/"></Navigate>
-                      )
-                    }
-                  ></Route>
-                ) : (
-                  <Route
-                    path="/edithall"
-                    element={<Accesdenied></Accesdenied>}
-                  ></Route>
-                )}
-
-                {restrictedLink === false ? (
-                  <Route
-                    path="/edituser"
-                    element={
-                      token ? (
-                        <EditUser></EditUser>
-                      ) : (
-                        <Navigate to="/"></Navigate>
-                      )
-                    }
-                  ></Route>
-                ) : (
-                  <Route
-                    path="/edituser"
-                    element={<Accesdenied></Accesdenied>}
-                  ></Route>
-                )}
-
-                {restrictedLink === false ? (
-                  <Route
-                    path="/adduser"
-                    element={
-                      token ? <AddUser></AddUser> : <Navigate to="/"></Navigate>
-                    }
-                  ></Route>
-                ) : (
-                  <Route
-                    path="/adduser"
-                    element={<Accesdenied></Accesdenied>}
-                  ></Route>
-                )}
-              </Routes>
-            ) : (
-              <Routes>
-                <Route path="/loading" element={<Loading></Loading>}></Route>
-                <Route path="/" element={<Login></Login>}></Route>
-                <Route
-                  path="/meeting"
-                  element={
-                    token ? <Meetings></Meetings> : <Navigate to="/"></Navigate>
-                  }
-                ></Route>
-                <Route
-                  path="/home"
-                  element={token ? <Home></Home> : <Navigate to="/"></Navigate>}
-                />
-                <Route
-                  path="/hall"
-                  element={token ? <Hall></Hall> : <Navigate to="/"></Navigate>}
-                ></Route>
-                <Route
-                  path="/addhall"
-                  element={
-                    token ? <AddHall></AddHall> : <Navigate to="/"></Navigate>
-                  }
-                ></Route>
-                <Route
-                  path="/edithall"
-                  element={
-                    token ? <EditHall></EditHall> : <Navigate to="/"></Navigate>
-                  }
-                ></Route>
-                <Route
-                  path="/error"
-                  element={<Accesdenied></Accesdenied>}
-                ></Route>
-                <Route
-                  path="/users"
-                  element={
-                    token ? <Users></Users> : <Navigate to="/"></Navigate>
-                  }
-                ></Route>
-                <Route
-                  path="/edituser"
-                  element={
-                    token ? <EditUser></EditUser> : <Navigate to="/"></Navigate>
-                  }
-                ></Route>
-                <Route
-                  path="/adduser"
-                  element={
-                    token ? <AddUser></AddUser> : <Navigate to="/"></Navigate>
-                  }
-                ></Route>
-                <Route
-                  path="/addmeeting"
-                  element={
-                    token ? (
-                      <AddMeeting></AddMeeting>
+                      <Route
+                        path="/hall"
+                        element={<Accesdenied></Accesdenied>}
+                      ></Route>
+                    )}
+                    {restrictedLink === false ? (
+                      <Route
+                        path="/addhall"
+                        element={
+                          token ? (
+                            <AddHall></AddHall>
+                          ) : (
+                            <Navigate to="/"></Navigate>
+                          )
+                        }
+                      ></Route>
                     ) : (
-                      <Navigate to="/"></Navigate>
-                    )
-                  }
-                ></Route>
-                <Route
-                  path="/editmeeting"
-                  element={
-                    token ? (
-                      <EditMeeting></EditMeeting>
+                      <Route
+                        path="/addhall"
+                        element={<Accesdenied></Accesdenied>}
+                      ></Route>
+                    )}
+
+                    {restrictedLink === false ? (
+                      <Route
+                        path="/edithall"
+                        element={
+                          token ? (
+                            <EditHall></EditHall>
+                          ) : (
+                            <Navigate to="/"></Navigate>
+                          )
+                        }
+                      ></Route>
                     ) : (
-                      <Navigate to="/"></Navigate>
-                    )
-                  }
-                ></Route>
-              </Routes>
-            )}
-          </Router>
-        </UserProvider>
-      </AuthProvider>
-      </Provider>
+                      <Route
+                        path="/edithall"
+                        element={<Accesdenied></Accesdenied>}
+                      ></Route>
+                    )}
+
+                    {restrictedLink === false ? (
+                      <Route
+                        path="/edituser"
+                        element={
+                          token ? (
+                            <EditUser></EditUser>
+                          ) : (
+                            <Navigate to="/"></Navigate>
+                          )
+                        }
+                      ></Route>
+                    ) : (
+                      <Route
+                        path="/edituser"
+                        element={<Accesdenied></Accesdenied>}
+                      ></Route>
+                    )}
+
+                    {restrictedLink === false ? (
+                      <Route
+                        path="/adduser"
+                        element={
+                          token ? (
+                            <AddUser></AddUser>
+                          ) : (
+                            <Navigate to="/"></Navigate>
+                          )
+                        }
+                      ></Route>
+                    ) : (
+                      <Route
+                        path="/adduser"
+                        element={<Accesdenied></Accesdenied>}
+                      ></Route>
+                    )}
+                  </Routes>
+                ) : (
+                  <Routes>
+                    <Route
+                      path="/loading"
+                      element={<Loading></Loading>}
+                    ></Route>
+                    <Route path="/" element={<Login></Login>}></Route>
+                    <Route
+                      path="/meeting"
+                      element={
+                        token ? (
+                          <Meetings></Meetings>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                    <Route
+                      path="/home"
+                      element={
+                        token ? <Home></Home> : <Navigate to="/"></Navigate>
+                      }
+                    />
+                    <Route
+                      path="/hall"
+                      element={
+                        token ? <Hall></Hall> : <Navigate to="/"></Navigate>
+                      }
+                    ></Route>
+                    <Route
+                      path="/addhall"
+                      element={
+                        token ? (
+                          <AddHall></AddHall>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                    <Route
+                      path="/edithall"
+                      element={
+                        token ? (
+                          <EditHall></EditHall>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                    <Route
+                      path="/error"
+                      element={<Accesdenied></Accesdenied>}
+                    ></Route>
+                    <Route
+                      path="/users"
+                      element={
+                        token ? <Users></Users> : <Navigate to="/"></Navigate>
+                      }
+                    ></Route>
+                    <Route
+                      path="/edituser"
+                      element={
+                        token ? (
+                          <EditUser></EditUser>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                    <Route
+                      path="/adduser"
+                      element={
+                        token ? (
+                          <AddUser></AddUser>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                    <Route
+                      path="/addmeeting"
+                      element={
+                        token ? (
+                          <AddMeeting></AddMeeting>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                    <Route
+                      path="/editmeeting"
+                      element={
+                        token ? (
+                          <EditMeeting></EditMeeting>
+                        ) : (
+                          <Navigate to="/"></Navigate>
+                        )
+                      }
+                    ></Route>
+                  </Routes>
+                )}
+              </Router>
+            </AuthProvider>
+          </Provider>
+        </CookieMonitorMiddleware>
+      </CookiesProvider>
     </div>
   );
 }

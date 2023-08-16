@@ -1,7 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../Context/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
@@ -10,7 +9,6 @@ import Home from "../Home/Home";
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showerrorMessage, setshowerrorMessage] = useState([]);
-  const { updateUser } = useContext(UserContext);
   const [authenticated, setAuthenticated] = useState(false);
   const navigate = useNavigate();
 
@@ -41,14 +39,8 @@ function Login() {
       await axios
         .post("https://meetingapi.infolksgroup.com/api/login", body, config)
         .then((response) => {
-          // console.log(response.data);
           const token = response.data["token"];
           localStorage.setItem("info_Authtoken", token);
-          const name = response.data["user"]["name"];
-          const ifid = response.data["user"]["if_id"];
-          const department = response.data["user"]["department"];
-          const user_type = response.data["user"]["user_type"];
-          updateUser({ name, ifid, department, user_type });
 
           Cookies.set("email", newUser["email"]);
           Cookies.set("password", newUser["password"]);
@@ -57,8 +49,6 @@ function Login() {
           Cookies.set("department", response.data["user"]["department"]);
           Cookies.set("user_type", response.data["user"]["user_type"]);
           window.location.href = "/home";
-          // navigate("/home");
-          // window.location.reload();
         });
     } catch (err) {
       setshowerrorMessage(err.response["data"]["message"]);
@@ -67,25 +57,18 @@ function Login() {
   };
 
   useEffect(() => {
-    // Function to handle authentication change
     const handleAuthChange = () => {
-      // Check if the token is present
       const authToken = localStorage.getItem("info_Authtoken");
       if (authToken) {
-        // Perform token validation logic if needed
         setAuthenticated(true);
       } else {
         setAuthenticated(false);
       }
     };
 
-    // Listen for storage events (changes in localStorage)
     window.addEventListener("storage", handleAuthChange);
-
-    // Initial check when the component mounts
     handleAuthChange();
 
-    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("storage", handleAuthChange);
     };
