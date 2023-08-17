@@ -9,7 +9,6 @@ import Cookies from "js-cookie";
 import BottomNavigation from "../Navbar/BottomNavigation";
 
 function Home() {
- 
   const userType = Cookies.get("user_type");
   const restrictedLinks = {
     user: ["/users", "/hall"], // Restricted links for the "user" user type
@@ -17,7 +16,6 @@ function Home() {
   };
 
   const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
-  
 
   return (
     <div className="font-sans">

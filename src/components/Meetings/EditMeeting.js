@@ -45,51 +45,59 @@ function EditMeeting() {
   // ---------------------- GET TIME SLOTS ---------------------------------------
 
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    axios
-      .get(`${apiUrl}/api/slot`, config)
-      .then((response) => {
-        setTimeList(response.data);
-        setTimeArray(editedItem.time);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [token, editedItem.time, apiUrl]);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios
+        .get(`${apiUrl}/api/slot`, config)
+        .then((response) => {
+          setTimeList(response.data);
+          setTimeArray(editedItem.time);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
+  }, [token, editedItem.time, apiUrl, navigate]);
 
   const times = TimeList.map((item) => item.time);
 
   // --------------------------- GET MEETING LIST --------------------------------
 
-  useEffect(() => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    axios
-      .get(`${apiUrl}/api/meeting-list`, config)
-      .then((response) => {
-        // convert date from datetime & save to meetinglist
-        const updatedList = response.data.map((item) => {
-          const dateOnly = item.date.split("T")[0];
-          return { ...item, date: dateOnly };
+  try {
+    useEffect(() => {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios
+        .get(`${apiUrl}/api/meeting-list`, config)
+        .then((response) => {
+          // convert date from datetime & save to meetinglist
+          const updatedList = response.data.map((item) => {
+            const dateOnly = item.date.split("T")[0];
+            return { ...item, date: dateOnly };
+          });
+          setMeetingList(updatedList);
+        })
+        .catch((error) => {
+          console.error(error);
         });
-        setMeetingList(updatedList);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [token, apiUrl]);
+    }, [token, apiUrl]);
+  } catch (error) {
+    navigate("/networkError");
+  }
 
   const matchingDict = meetingList.filter(
     (dict) => dict.hall === editedItem.hall && dict.date === editedItem.date

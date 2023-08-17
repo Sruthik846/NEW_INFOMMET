@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import BottomNavigation from "../Navbar/BottomNavigation";
@@ -26,7 +26,7 @@ function Meetings() {
 
   // --------------------------- GET MEETING LIST --------------------------------
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
     const config = {
@@ -35,34 +35,38 @@ function Meetings() {
         Authorization: `Bearer ${token}`,
       },
     };
-    axios
-      .get(`${apiUrl}/api/meeting-list`, config)
-      .then((response) => {
-        // convert date from datetime & save to updatedta
-        const updatedList = response.data.map((item) => {
-          const dateOnly = item.date.split("T")[0];
-          const timeList = item.time.join(", ");
-          return { ...item, date: dateOnly, timestr: timeList };
-        });
-        setUpdateData(updatedList);
-        const currentDate = new Date().toISOString().split("T")[0]; // Get current date
+    try {
+      axios
+        .get(`${apiUrl}/api/meeting-list`, config)
+        .then((response) => {
+          // convert date from datetime & save to updatedta
+          const updatedList = response.data.map((item) => {
+            const dateOnly = item.date.split("T")[0];
+            const timeList = item.time.join(", ");
+            return { ...item, date: dateOnly, timestr: timeList };
+          });
+          setUpdateData(updatedList);
+          const currentDate = new Date().toISOString().split("T")[0]; // Get current date
 
-        const upcomingDates = [];
-        const completedDates = [];
+          const upcomingDates = [];
+          const completedDates = [];
 
-        updatedList.forEach((item) => {
-          if (item.date < currentDate) {
-            completedDates.push(item);
-          } else {
-            upcomingDates.push(item);
-          }
+          updatedList.forEach((item) => {
+            if (item.date < currentDate) {
+              completedDates.push(item);
+            } else {
+              upcomingDates.push(item);
+            }
+          });
+          setUpcomingData(upcomingDates);
+          setCompletedData(completedDates);
+        })
+        .catch((error) => {
+          console.error(error);
         });
-        setUpcomingData(upcomingDates);
-        setCompletedData(completedDates);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    } catch (error) {
+      Navigate("/networkError");
+    }
   }, [token, apiUrl]);
 
   // ---------------------------------------------------- DELETE DATA  ----------------------------------------
@@ -78,41 +82,42 @@ function Meetings() {
     setshowDeletemodal(true);
   };
   const handleDelete = async () => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    axios
-      .delete(
-        `${apiUrl}/api/meeting/delete/${selectedItemId}`,
-        config
-      )
-      .then((response) => {
-        // console.log(response.data);
-        deleteDictById(selectedItemId);
-        // setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios
+        .delete(`${apiUrl}/api/meeting/delete/${selectedItemId}`, config)
+        .then((response) => {
+          // console.log(response.data);
+          deleteDictById(selectedItemId);
+          // setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
 
-    const updatedListmeet = updateData.filter(
-      (item) => item.id !== selectedItemId
-    );
-    setUpdateData(updatedListmeet);
-    const updatedList = upcomingdata.filter(
-      (item) => item.id !== selectedItemId
-    );
-    setUpcomingData(updatedList);
+      const updatedListmeet = updateData.filter(
+        (item) => item.id !== selectedItemId
+      );
+      setUpdateData(updatedListmeet);
+      const updatedList = upcomingdata.filter(
+        (item) => item.id !== selectedItemId
+      );
+      setUpcomingData(updatedList);
 
-    const updatedList_completed = completedData.filter(
-      (item) => item.id !== selectedItemId
-    );
-    setCompletedData(updatedList_completed);
-    setshowDeletemodal(false);
+      const updatedList_completed = completedData.filter(
+        (item) => item.id !== selectedItemId
+      );
+      setCompletedData(updatedList_completed);
+      setshowDeletemodal(false);
+    } catch (error) {
+      Navigate("/networkError");
+    }
   };
 
   // Success message close

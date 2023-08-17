@@ -33,48 +33,51 @@ function AddMeeting() {
 
   // ---------------------- GET TIME SLOTS ---------------------------------------
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    axios
-      .get(`${apiUrl}/api/slot`, config)
-      .then((response) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios.get(`${apiUrl}/api/slot`, config).then((response) => {
         // console.log(response.data);
         setTimeList(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
       });
-  }, [token, apiUrl]);
+    } catch (error) {
+      navigate("/networkError");
+    }
+  }, [token, apiUrl, navigate] );
 
   // --------------------------- GET MEETING LIST --------------------------------
   useEffect(() => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    axios
-      .get(`${apiUrl}/api/meeting-list`, config)
-      .then((response) => {
-        // convert date from datetime & save to updatedta
-        const updatedList = response.data.map((item) => {
-          const dateOnly = item.date.split("T")[0];
-          return { ...item, date: dateOnly };
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios
+        .get(`${apiUrl}/api/meeting-list`, config)
+        .then((response) => {
+          // convert date from datetime & save to updatedta
+          const updatedList = response.data.map((item) => {
+            const dateOnly = item.date.split("T")[0];
+            return { ...item, date: dateOnly };
+          });
+          setMeetingList(updatedList);
+        })
+        .catch((error) => {
+          console.error(error);
         });
-        setMeetingList(updatedList);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [token, apiUrl]);
+    } catch (error) {
+      navigate("/networkError");
+    }
+  }, [token, apiUrl, navigate]);
 
   const handleButtonClick = (value) => {
     // If already exists remove it from the list
@@ -133,21 +136,25 @@ function AddMeeting() {
     newUser.department = department;
     // console.log(newUser);
 
-    axios
-      .post(`${apiUrl}/api/booking`, newUser, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setshowsuccessMessage("Meeting Created");
-        // window.location.reload()
-      })
-      .catch((error) => {
-        console.error("Error : ", error["message"]);
-        setshowerrorMessage(error["message"]);
-      });
+    try {
+      axios
+        .post(`${apiUrl}/api/booking`, newUser, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          setshowsuccessMessage("Meeting Created");
+          // window.location.reload()
+        })
+        .catch((error) => {
+          console.error("Error : ", error["message"]);
+          setshowerrorMessage(error["message"]);
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
 
     setFormData({
       agenda: "",
@@ -262,38 +269,36 @@ function AddMeeting() {
           onSubmit={(e) => onSubmit(e)}
         >
           <div className="grid lg:grid-cols-2 lg:gap-2">
-          <div className="flex items-center bg-gray-200 lg:bg-gray-800 md:bg-gray-800 border lg:border-gray-600 md:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
-            <select
-              id="halls"
-              name="hall"
-              value={hall}
-              onChange={(e) => onChangeFormdata(e)}
-              required
-              // defaultValue="option1"
-              className="flex-grow block w-full px-4 py-2 text-sm border bg-gray-200 lg:bg-gray-800 lg:border-none lg:text-gray-300 md:bg-gray-800 md:border-none md:text-gray-300 rounded-lg focus:outline-none focus:ring-opacity-40"
-            >
-              <option value="option1">
-                Select hall
-              </option>
-              <option value="Main Office Conference Hall">
-                Main Office Conference Hall
-              </option>
-              <option value="ODC Conference Hall">ODC Conference Hall</option>
-            </select>
-          </div>
-          <div className="flex items-center bg-gray-200 lg:bg-gray-800 md:bg-gray-800 border lg:border-gray-600 md:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
-            <input
-              type="date"
-              name="date"
-              value={date}
-              id="date"
-              onChange={(e) => onChangeFormdata(e)}
-              className="flex-grow block w-full py-2 lg:placeholder-gray-300 placeholder-gray-800 text-sm border lg:bg-gray-800 lg:border-none lg:text-gray-300 md:bg-gray-800 md:border-none md:text-gray-300 bg-gray-200 rounded-lg focus:outline-none focus:ring-opacity-40"
-              style={{ paddingLeft: "1rem" }}
-              placeholder="Date"
-              required
-            />
-          </div>
+            <div className="flex items-center bg-gray-200 lg:bg-gray-800 md:bg-gray-800 border lg:border-gray-600 md:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
+              <select
+                id="halls"
+                name="hall"
+                value={hall}
+                onChange={(e) => onChangeFormdata(e)}
+                required
+                // defaultValue="option1"
+                className="flex-grow block w-full px-4 py-2 text-sm border bg-gray-200 lg:bg-gray-800 lg:border-none lg:text-gray-300 md:bg-gray-800 md:border-none md:text-gray-300 rounded-lg focus:outline-none focus:ring-opacity-40"
+              >
+                <option value="option1">Select hall</option>
+                <option value="Main Office Conference Hall">
+                  Main Office Conference Hall
+                </option>
+                <option value="ODC Conference Hall">ODC Conference Hall</option>
+              </select>
+            </div>
+            <div className="flex items-center bg-gray-200 lg:bg-gray-800 md:bg-gray-800 border lg:border-gray-600 md:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
+              <input
+                type="date"
+                name="date"
+                value={date}
+                id="date"
+                onChange={(e) => onChangeFormdata(e)}
+                className="flex-grow block w-full py-2 lg:placeholder-gray-300 placeholder-gray-800 text-sm border lg:bg-gray-800 lg:border-none lg:text-gray-300 md:bg-gray-800 md:border-none md:text-gray-300 bg-gray-200 rounded-lg focus:outline-none focus:ring-opacity-40"
+                style={{ paddingLeft: "1rem" }}
+                placeholder="Date"
+                required
+              />
+            </div>
           </div>
 
           <div className="flex items-center bg-gray-200 lg:bg-gray-800 md:bg-gray-800 border lg:border-gray-600 md:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">

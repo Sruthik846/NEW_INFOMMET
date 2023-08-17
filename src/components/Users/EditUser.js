@@ -31,10 +31,10 @@ function EditUser() {
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
-  }, [token])
+  }, [token]);
 
   // Success message close
   const handleClose = () => {
@@ -57,24 +57,24 @@ function EditUser() {
     event.preventDefault();
     editedItem.password = editedItem.plain_password;
     // console.log(editedItem);
-    axios
-      .put(
-        `${apiUrl}/api/user/${editedItem["id"]}`,
-        editedItem,
-        {
+    try {
+      axios
+        .put(`${apiUrl}/api/user/${editedItem["id"]}`, editedItem, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      )
-      .then((response) => {
-        // console.log(response.data);
-        setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error);
-        setshowerrorMessage(error.response["data"]["errors"]);
-      });
+        })
+        .then((response) => {
+          // console.log(response.data);
+          setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error);
+          setshowerrorMessage(error.response["data"]["errors"]);
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
   };
 
   const title = "Edit User";

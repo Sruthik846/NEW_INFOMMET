@@ -18,10 +18,10 @@ function Logout() {
       })
       .then((response) => {
         // console.log(response.data);
-        
+
         localStorage.removeItem("info_Authtoken");
         localStorage.removeItem("user");
-        localStorage.removeItem('tokenExpirationTime');
+        localStorage.removeItem("tokenExpirationTime");
         updateToken("");
         // window.location.reload();
         navigate("/");

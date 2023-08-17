@@ -8,7 +8,6 @@ import TopNav from "../Navbar/TopNav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
-import Login from "../Login/Login";
 
 function Users() {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -34,9 +33,9 @@ function Users() {
     // console.log(isAuthenticated);
     if (!isAuthenticated) {
       console.log("COOKIE DELETED");
-      <Login></Login>;
+      navigate("/");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   const handleSearch = (event) => {
     const searchTerm = event.target.value;
@@ -52,22 +51,26 @@ function Users() {
     if (!token) {
       window.location.href = "/";
     }
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    axios
-      .get(`${apiUrl}/api/user`, config)
-      .then((response) => {
-        setDataList(response.data);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
-  }, [token, apiUrl]);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios
+        .get(`${apiUrl}/api/user`, config)
+        .then((response) => {
+          setDataList(response.data);
+        })
+        .catch((error) => {
+          console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
+  }, [token, apiUrl, navigate]);
 
   // ---------------------------------- DELETE USER --------------------------------------
   const deleteDictById = (id) => {
@@ -83,22 +86,26 @@ function Users() {
   };
   const handleDelete = async () => {
     // console.log(selectedItemId);
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    axios
-      .delete(`${apiUrl}/api/user/${selectedItemId}`, config)
-      .then((response) => {
-        // console.log(response.data);
-        deleteDictById(selectedItemId);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      axios
+        .delete(`${apiUrl}/api/user/${selectedItemId}`, config)
+        .then((response) => {
+          // console.log(response.data);
+          deleteDictById(selectedItemId);
+        })
+        .catch((error) => {
+          console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
     const updatedList = dataList.filter((item) => item.id !== selectedItemId);
     setDataList(updatedList);
     setshowDeletemodal(false);
@@ -128,17 +135,21 @@ function Users() {
     const updatedItem = { ...selectedEditItemId };
 
     updatedItem.password = updatedItem.plain_password;
-    axios
-      .put(`${apiUrl}/api/user/${updatedItem["id"]}`, updatedItem)
-      .then((response) => {
-        // console.log(response.data);
-        updateDictionary(updatedItem["id"], updatedItem);
-        setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
+    try {
+      axios
+        .put(`${apiUrl}/api/user/${updatedItem["id"]}`, updatedItem)
+        .then((response) => {
+          // console.log(response.data);
+          updateDictionary(updatedItem["id"], updatedItem);
+          setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
 
     // Close the modal after saving
     setshowEditmodal(false);
@@ -163,22 +174,26 @@ function Users() {
     e.preventDefault();
 
     // console.log(formData);
-    await axios
-      .post(`${apiUrl}/api/user`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // console.log(response.data);
-        const updatedList = [...dataList, response.data["user"]];
-        setDataList(updatedList);
-        setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
+    try {
+      await axios
+        .post(`${apiUrl}/api/user`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // console.log(response.data);
+          const updatedList = [...dataList, response.data["user"]];
+          setDataList(updatedList);
+          setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
     setshowAddmodal(false);
     setFormData({
       name: "",

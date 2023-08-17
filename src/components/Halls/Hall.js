@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AddHall from "./AddHall";
 import EditHall from "./EditHall";
@@ -15,6 +15,7 @@ function Hall() {
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const token = localStorage.getItem("info_Authtoken");
+  const navigate = useNavigate();
 
   const [showDeletemodal, setshowDeletemodal] = useState(false);
   const [hallList, setHallList] = useState([]);
@@ -27,23 +28,28 @@ function Hall() {
 
   // GET DATA
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
-    axios
-      .get(`${apiUrl}/api/hall`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // console.log(response.data);
-        setHallList(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [token, apiUrl]);
+    try {
+      axios
+        .get(`${apiUrl}/api/hall`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // console.log(response.data);
+          setHallList(response.data);
+        })
+        .catch((error) => {
+          // console.error('Error ',error['message']);
+          navigate("/networkError");
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
+  }, [token, apiUrl, navigate]);
 
   // --------------------------------- DELETE HALL -------------------------------------
   const deleteDictById = (id) => {
@@ -65,21 +71,22 @@ function Hall() {
         Authorization: `Bearer ${token}`,
       },
     };
-    axios
-      .delete(
-        `${apiUrl}/api/hall/${selectedItemId}`,
-        config
-      )
-      .then((response) => {
-        // console.log(response.data);
-        deleteDictById(selectedItemId);
-        // setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
-    setshowDeletemodal(false);
+    try {
+      axios
+        .delete(`${apiUrl}/api/hall/${selectedItemId}`, config)
+        .then((response) => {
+          // console.log(response.data);
+          deleteDictById(selectedItemId);
+          // setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          // console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
+      setshowDeletemodal(false);
+    } catch (error) {
+      navigate("/networkError");
+    }
   };
 
   // ----------------------- CREATE HALL ------------------------------------------------------------------
@@ -101,24 +108,28 @@ function Hall() {
       floor,
       building,
     };
-    // console.log(newUser);
-    axios
-      .post(`${apiUrl}/api/hall`, newUser, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // console.log(response.data);
-        const updatedList = [...hallList, response.data["hall"]];
-        setHallList(updatedList);
-        setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
-    setshowAddHall(false);
+    try {
+      // console.log(newUser);
+      axios
+        .post(`${apiUrl}/api/hall`, newUser, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // console.log(response.data);
+          const updatedList = [...hallList, response.data["hall"]];
+          setHallList(updatedList);
+          setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
+      setshowAddHall(false);
+    } catch (error) {
+      navigate("/networkError");
+    }
   };
 
   // ---------------------------------- EDIT HALL -------------------------------------------------
@@ -130,7 +141,6 @@ function Hall() {
         }
         return dict;
       });
-
     });
   };
 
@@ -142,27 +152,27 @@ function Hall() {
   const handleSave = (event) => {
     const updatedItem = { ...selectedEditItemId };
     // console.log(updatedItem);
-    axios
-      .put(
-        `${apiUrl}/api/hall/${updatedItem["id"]}`,
-        updatedItem,
-        {
+    try {
+      axios
+        .put(`${apiUrl}/api/hall/${updatedItem["id"]}`, updatedItem, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      )
-      .then((response) => {
-        // console.log(response.data);
-        updateDictionary(updatedItem["id"], updatedItem);
-        setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error);
-        setshowerrorMessage(error.response["data"]["errors"]);
-      });
+        })
+        .then((response) => {
+          // console.log(response.data);
+          updateDictionary(updatedItem["id"], updatedItem);
+          setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error);
+          setshowerrorMessage(error.response["data"]["errors"]);
+        });
 
-    setshowEditHall(false);
+      setshowEditHall(false);
+    } catch (error) {
+      navigate("/networkError");
+    }
   };
 
   // Success message close
@@ -324,7 +334,10 @@ function Hall() {
         </div>
       </div>
 
-      <div className="fixed p-6 container mx-auto md:hidden" style={{ bottom: '76px'}}>
+      <div
+        className="fixed p-6 container mx-auto md:hidden"
+        style={{ bottom: "76px" }}
+      >
         <Link to="/addhall">
           <button className="flex gap-1 w-full bg-blue-800 p-6 text-sm items-center hover:bg-blue-600 hover:text-white text-white py-2 px-4 rounded shadow justify-center">
             <Routes>

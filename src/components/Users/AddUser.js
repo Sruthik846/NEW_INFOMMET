@@ -22,10 +22,10 @@ function AddUser() {
   const [showerrorMessage, setshowerrorMessage] = useState([]);
 
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
-  }, [token])
+  }, [token]);
 
   // Success message close
   const handleClose = () => {
@@ -62,19 +62,23 @@ function AddUser() {
       password,
     };
     // console.log(newUser);
-    axios
-      .post(`${apiUrl}/api/user`, newUser, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
+    try {
+      axios
+        .post(`${apiUrl}/api/user`, newUser, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
+    } catch (error) {
+      navigate("/netorkerror");
+    }
   };
 
   const title = "Add User";

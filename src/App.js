@@ -25,6 +25,7 @@ import {
   BrowserRouter as Router,
   Navigate,
 } from "react-router-dom";
+import NetworkError from "./components/Error/NetworkError";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -73,6 +74,10 @@ function App() {
                         token ? <Home></Home> : <Navigate to="/"></Navigate>
                       }
                     />
+                    <Route
+                      path="/networkError"
+                      element={<NetworkError></NetworkError>}
+                    ></Route>
                     <Route
                       path="/error"
                       element={<Accesdenied></Accesdenied>}
@@ -260,6 +265,11 @@ function App() {
                     <Route
                       path="/error"
                       element={<Accesdenied></Accesdenied>}
+                    ></Route>
+
+                    <Route
+                      path="/networkerror"
+                      element={<NetworkError></NetworkError>}
                     ></Route>
                     <Route
                       path="/users"

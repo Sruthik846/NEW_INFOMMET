@@ -26,12 +26,11 @@ function EditHall() {
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
-
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
-  }, [token])   
+  }, [token]);
 
   // Success message close
   const handleClose = () => {
@@ -53,24 +52,24 @@ function EditHall() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // console.log(editedItem);
-    axios
-      .put(
-        `${apiUrl}/api/hall/${editedItem["id"]}`,
-        editedItem,
-        {
+    try {
+      axios
+        .put(`${apiUrl}/api/hall/${editedItem["id"]}`, editedItem, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      )
-      .then((response) => {
-        // console.log(response.data);
-        setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error);
-        setshowerrorMessage(error.response["data"]["errors"]);
-      });
+        })
+        .then((response) => {
+          // console.log(response.data);
+          setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error);
+          setshowerrorMessage(error.response["data"]["errors"]);
+        });
+    } catch (error) {
+      navigate("/networkError");
+    }
   };
 
   const title = "Edit Hall";

@@ -26,7 +26,7 @@ const AuthProvider = ({ children }) => {
   const handleTokenExpiration = async () => {
     if (!token || !token.expirationTime) {
       updateToken("");
-      console.log("Expired");
+      // console.log("Expired");
       // If token is expired check for user exist. If user regenerate token , else redirect to login page
       if (email && password) {
         const newUser = {

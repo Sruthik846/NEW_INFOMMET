@@ -18,10 +18,10 @@ function AddHall() {
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
   useEffect(() => {
-    if(!token){
+    if (!token) {
       window.location.href = "/";
     }
-  }, [token])
+  }, [token]);
 
   // Success message close
   const handleClose = () => {
@@ -54,20 +54,25 @@ function AddHall() {
       building,
     };
     // console.log(newUser);
-    axios
-      .post(`${apiUrl}/api/hall`, newUser, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // console.log(response.data);
-        setshowsuccessMessage(response.data["message"]);
-      })
-      .catch((error) => {
-        console.error("Error : ", error.response["data"]);
-        setshowerrorMessage(error.response["data"]);
-      });
+    try {
+      axios
+        .post(`${apiUrl}/api/hall`, newUser, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // console.log(response.data);
+          setshowsuccessMessage(response.data["message"]);
+        })
+        .catch((error) => {
+          console.error("Error : ", error.response["data"]);
+          setshowerrorMessage(error.response["data"]);
+        });
+    } catch (error) {
+      // Handle the error gracefully
+      navigate("/networkError");
+    }
   };
 
   const title = "Add Hall";
