@@ -11,7 +11,7 @@ import Meetings from "./Meetings";
 
 function AddMeeting() {
   const apiUrl = process.env.REACT_APP_API_URL;
-  const token = localStorage.getItem("info_Authtoken");
+  const token = Cookies.get("info_Authtoken");
   const ifid = Cookies.get("ifid");
   const name = Cookies.get("name");
   const department = Cookies.get("department");

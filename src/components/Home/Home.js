@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import BottomNavigation from "../Navbar/BottomNavigation";
 
 function Home() {
+  // const token = Cookies.get("info_Authtoken");
   const userType = Cookies.get("user_type");
   const restrictedLinks = {
     user: ["/users", "/hall"], // Restricted links for the "user" user type

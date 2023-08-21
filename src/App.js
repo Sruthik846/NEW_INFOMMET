@@ -52,7 +52,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("info_Authtoken");
+    const storedToken = Cookies.get("info_Authtoken");
     setToken(storedToken);
   }, []);
 

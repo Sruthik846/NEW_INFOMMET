@@ -8,13 +8,14 @@ import TopNav from "../Navbar/TopNav";
 import { FaPlusCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import Cookies from "js-cookie";
 
 function Hall() {
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
-  const token = localStorage.getItem("info_Authtoken");
+  const token = Cookies.get("info_Authtoken");
   const navigate = useNavigate();
 
   const [showDeletemodal, setshowDeletemodal] = useState(false);

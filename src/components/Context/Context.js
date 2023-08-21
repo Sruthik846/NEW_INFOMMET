@@ -11,7 +11,7 @@ const AuthProvider = ({ children }) => {
   const password = Cookies.get("password");
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("info_Authtoken");
+    const savedToken = Cookies.get("info_Authtoken");
     if (savedToken) {
       setToken(savedToken);
       generateToken();
@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
           .then((response) => {
             setToken(response.data["token"]);
             generateToken();
-            localStorage.setItem("info_Authtoken", response.data["token"]);
+            Cookies.set("info_Authtoken", token);
           });
       } else {
         <Login></Login>;
@@ -67,7 +67,7 @@ const AuthProvider = ({ children }) => {
 
   const updateToken = async (newToken) => {
     setToken(newToken);
-    localStorage.setItem("info_Authtoken", newToken);
+    Cookies.set("info_Authtoken", token);
   };
 
   return (

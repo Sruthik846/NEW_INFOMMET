@@ -5,6 +5,7 @@ import axios from "axios";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Hall from "./Hall";
+import Cookies from "js-cookie";
 import {
   useLocation,
   useNavigate,
@@ -21,7 +22,7 @@ function EditHall() {
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
-  const token = localStorage.getItem("info_Authtoken");
+  const token = Cookies.get("info_Authtoken");
 
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);

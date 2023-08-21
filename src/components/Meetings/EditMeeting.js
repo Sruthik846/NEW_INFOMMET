@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import TopNav from "../Navbar/TopNav";
 import Meetings from "./Meetings";
+import Cookies from "js-cookie";
 import {
   useNavigate,
   useLocation,
@@ -20,7 +21,7 @@ function EditMeeting() {
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
-  const token = localStorage.getItem("info_Authtoken");
+  const token = Cookies.get("info_Authtoken");
   const location = useLocation();
   const data = location.state;
   const [editedItem, setEditedItem] = useState({ ...data });

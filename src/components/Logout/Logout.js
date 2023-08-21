@@ -1,15 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import axios from "axios";
-import { AuthContext } from "../Context/Context";
-import { useNavigate } from "react-router-dom";
+// import { AuthContext } from "../Context/Context";
+import Cookies from "js-cookie";
 
 function Logout() {
-  const token = localStorage.getItem("info_Authtoken");
-  const { updateToken } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const token = Cookies.get("info_Authtoken");
+  // const { updateToken } = useContext(AuthContext);
   const handleLogout = async () => {
-    // console.log('Logout token' ,token);
     await axios
       .post("http://meetingapi.infolksgroup.com/api/logout", null, {
         headers: {
@@ -17,14 +15,12 @@ function Logout() {
         },
       })
       .then((response) => {
+        Cookies.remove('info_Authtoken');
         // console.log(response.data);
-
-        localStorage.removeItem("info_Authtoken");
-        localStorage.removeItem("user");
-        localStorage.removeItem("tokenExpirationTime");
-        updateToken("");
-        // window.location.reload();
-        navigate("/");
+        // localStorage.removeItem("info_Authtoken");
+        // localStorage.removeItem("tokenExpirationTime");
+        // updateToken("");
+        window.location.reload();
       })
       .catch((error) => console.error(error));
   };

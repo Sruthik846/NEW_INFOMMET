@@ -11,7 +11,7 @@ import { FaPlusCircle } from "react-icons/fa";
 function Meetings() {
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
-  const token = localStorage.getItem("info_Authtoken");
+  const token = Cookies.get("info_Authtoken");
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const name = Cookies.get("name");

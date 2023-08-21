@@ -1,5 +1,7 @@
+import Cookies from "js-cookie";
+
 const initialState = {
-  isAuthenticated: !!localStorage.getItem("info_Authtoken"),
+  isAuthenticated: !!Cookies.get("info_Authtoken"),
 };
 
 const authenticationReducer = (state = initialState, action) => {

@@ -5,6 +5,7 @@ import { useNavigate, Route, Routes, Link } from "react-router-dom";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Users from "./Users";
+import Cookies from "js-cookie";
 import {
   faPencil,
   faEnvelope,
@@ -16,7 +17,7 @@ function AddUser() {
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
-  const token = localStorage.getItem("info_Authtoken");
+  const token = Cookies.get("info_Authtoken");
 
   const [showsuccessMessage, setshowsuccessMessage] = useState("");
   const [showerrorMessage, setshowerrorMessage] = useState([]);

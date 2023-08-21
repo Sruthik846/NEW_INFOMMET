@@ -40,7 +40,8 @@ function Login() {
         .post("https://meetingapi.infolksgroup.com/api/login", body, config)
         .then((response) => {
           const token = response.data["token"];
-          localStorage.setItem("info_Authtoken", token);
+          // localStorage.setItem("info_Authtoken", token);
+          Cookies.set("info_Authtoken", token);
 
           Cookies.set("email", newUser["email"]);
           Cookies.set("password", newUser["password"]);
@@ -58,7 +59,7 @@ function Login() {
 
   useEffect(() => {
     const handleAuthChange = () => {
-      const authToken = localStorage.getItem("info_Authtoken");
+      const authToken = Cookies.get("info_Authtoken");
       if (authToken) {
         setAuthenticated(true);
       } else {
