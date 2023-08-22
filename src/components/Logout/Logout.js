@@ -9,17 +9,19 @@ function Logout() {
   // const { updateToken } = useContext(AuthContext);
   const handleLogout = async () => {
     await axios
-      .post("http://meetingapi.infolksgroup.com/api/logout", null, {
+      .post("http://meetingapi.infolksgroup.com/api/logout",null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         Cookies.remove('info_Authtoken');
-        // console.log(response.data);
-        // localStorage.removeItem("info_Authtoken");
-        // localStorage.removeItem("tokenExpirationTime");
-        // updateToken("");
+        Cookies.remove('email');
+        Cookies.remove('name');
+        Cookies.remove('ifid');
+        Cookies.remove('department');
+        Cookies.remove('user_type');
+        Cookies.remove('password');
         window.location.reload();
       })
       .catch((error) => console.error(error));

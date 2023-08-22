@@ -26,6 +26,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import NetworkError from "./components/Error/NetworkError";
+// import { AuthContextProvider} from './components/Context/AuthContext'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -58,6 +59,7 @@ function App() {
 
   return (
     <div className="App">
+      {/* <AuthContextProvider> */}
       <CookiesProvider>
         <CookieMonitorMiddleware>
           <Provider store={store}>
@@ -324,7 +326,9 @@ function App() {
           </Provider>
         </CookieMonitorMiddleware>
       </CookiesProvider>
+      {/* </AuthContextProvider> */}
     </div>
+    
   );
 }
 

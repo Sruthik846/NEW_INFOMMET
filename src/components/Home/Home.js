@@ -16,6 +16,15 @@ function Home() {
     admin: [], // Empty array for unrestricted links of "admin" user type
   };
 
+  const checkCookieExists = (cookieName) => {
+    return document.cookie.split('; ').some((cookie) => {
+      return cookie.split('=')[0] === cookieName;
+    });
+  };
+
+  const cookieExists = checkCookieExists('myCookie');
+  console.log(cookieExists);
+
   const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
 
   return (
