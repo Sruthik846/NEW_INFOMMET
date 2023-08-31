@@ -22,6 +22,7 @@ function Logout() {
         Cookies.remove('department');
         Cookies.remove('user_type');
         Cookies.remove('password');
+        
         window.location.reload();
       })
       .catch((error) => console.error(error));

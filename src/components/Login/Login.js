@@ -4,16 +4,19 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
+import cookie from "react-cookie";
 import Home from "../Home/Home";
 import AuthContext from "../Context/AuthContext";
+import { useCookies } from "react-cookie";
 
 // axios.defaults.withCredentials = true;
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showerrorMessage, setshowerrorMessage] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
+  const [tokens, settoken] = useState("");
   const navigate = useNavigate();
-  const {loginApiCall} = useContext(AuthContext)
+  const { loginApiCall } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -37,35 +40,66 @@ function Login() {
     };
     // await loginApiCall(payload);
 
-    
     try {
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer 20|YuM6aPDZhJXBJ8NV2Zx4zaAGY7jBYZnJkAwcvcu0",
         },
-        
       };
       const body = JSON.stringify(newUser);
       await axios
-        .post("https://meetingapi.infolksgroup.com/api/login", body, config)
+        .post("https://meetingapi.infolksgroup.com/api/login", body, config, {
+          withCredentials: true,
+        })
         .then((response) => {
           const token = response.data["token"];
+
+          settoken(token);
+
           // localStorage.setItem("info_Authtoken", token);
+          // document.cookie = `dfkdfgkfdm=${token}; HttpOnly; Secure; SameSite=Strict`;
           Cookies.set("info_Authtoken", token);
-          Cookies.set("email", newUser["email"],{secure:true});
-          Cookies.set("password", newUser["password"],{httpOnly:true, secure:true});
-          Cookies.set("name", response.data["user"]["name"],{httpOnly:true});
-          Cookies.set("ifid", response.data["user"]["if_id"],{httpOnly:true});
-          Cookies.set("department", response.data["user"]["department"],{httpOnly:true});
-          Cookies.set("user_type", response.data["user"]["user_type"],{httpOnly:true});
-          window.location.href = "/home";
+          Cookies.set("email", newUser["email"], { secure: true });
+          Cookies.set("password", newUser["password"], {
+            httpOnly: true,
+            secure: true,
+          });
+          Cookies.set("name", response.data["user"]["name"], {
+            httpOnly: true,
+          });
+          Cookies.set("ifid", response.data["user"]["if_id"], {
+            httpOnly: true,
+          });
+          Cookies.set("department", response.data["user"]["department"], {
+            httpOnly: true,
+          });
+          Cookies.set("user_type", response.data["user"]["user_type"], {
+            httpOnly: true,
+          });
+          updateValue(token);
         });
+      
     } catch (err) {
-      setshowerrorMessage(err.response["data"]["message"]);
+      // setshowerrorMessage(err.response["data"]["message"]);
       navigate("/");
     }
+    
   };
+
+  const updateValue = async(tokens) => {
+    console.log("Before server", tokens);
+      await axios.post(
+        "http://localhost:5000/api/loginn",
+        { tokens },
+        { withCredentials: true }
+      );
+      console.log("After server", tokens);
+      // window.location.href = "/home";
+  };
+
+
+  
 
   useEffect(() => {
     const handleAuthChange = () => {

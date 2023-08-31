@@ -7,6 +7,7 @@ import Meetings from "../Meetings/Meetings";
 import Hall from "../Halls/Hall";
 import Cookies from "js-cookie";
 import BottomNavigation from "../Navbar/BottomNavigation";
+import { useCookies } from "react-cookie";
 
 function Home() {
   // const token = Cookies.get("info_Authtoken");
@@ -15,6 +16,14 @@ function Home() {
     user: ["/users", "/hall"], // Restricted links for the "user" user type
     admin: [], // Empty array for unrestricted links of "admin" user type
   };
+  // const [cookies, setCookie] = useCookies(['name']);
+  // setCookie('name', 'Unknown', { path: '/', httpOnly:true });
+  // const cookieOptions = {
+  //   httpOnly: true,
+  //   secure: true, // Recommended for production over HTTPS
+  //   sameSite: 'strict', // Set the appropriate SameSite policy
+  // };
+  // document.cookie = "Name=value";
 
   const checkCookieExists = (cookieName) => {
     return document.cookie.split('; ').some((cookie) => {
@@ -22,7 +31,7 @@ function Home() {
     });
   };
 
-  const cookieExists = checkCookieExists('myCookie');
+  const cookieExists = checkCookieExists('dfkdfgkfdm');
   console.log(cookieExists);
 
   const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;

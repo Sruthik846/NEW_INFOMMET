@@ -1,9 +1,10 @@
 import axios from "axios";
 import { createContext } from "react";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
+import Cookies from "universal-cookie";
 
 const AuthContext = createContext({})
-
+const cookies = new Cookies();
 export const AuthContextProvider = () => {
     const loginApiCall = async (payload) =>{
         const config = {
@@ -18,7 +19,8 @@ export const AuthContextProvider = () => {
             withCredentials:true,
         }).then((response) =>{
             const token = response.data["token"];
-          // localStorage.setItem("info_Authtoken", token);
+            const myCookieValue = cookies.get('info_Authtoken');
+          localStorage.setItem("info_Authtoken", token);
           Cookies.set("info_Authtoken", token);
           Cookies.set("email", ['admin@admin.com']);
           Cookies.set("password", ["admin@admin.com"],{httpOnly:true});
