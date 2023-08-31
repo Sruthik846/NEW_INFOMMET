@@ -50,16 +50,20 @@ app.use(cookieParser());
 app.post('/api/loginn', (req, res) => {
   const { tokens } = req.body;
   // In a real application, validate the user's credentials
-  console.log(tokens);
-  cookie.set("token", tokens, {
-    httpOnly: true,
-  });
-    res.cookie('session', req.body, {
+  // const jsonString = JSON.stringify(tokens);
+  // console.log(jsonString);
+    res.cookie('sessionn', tokens, {
       httpOnly: true,
       sameSite: 'strict',
     });
     res.status(200).json({ success: true, });
  
+});
+
+// For getting coie
+app.get('/get-cookie-data', (req, res) => {
+  const cookieValue = req.cookies.sessionn; // Access the HTTP-only cookie
+  res.json({ auth: cookieValue });
 });
 
 app.listen(port, () => {

@@ -1,10 +1,22 @@
 import axios from "axios";
+import { useEffect } from "react";
 import { createContext } from "react";
 // import Cookies from "js-cookie";
 import Cookies from "universal-cookie";
 
 const AuthContext = createContext({})
 const cookies = new Cookies();
+
+  axios.get('http://localhost:5000/get-cookie-data')
+  .then(response => {
+    console.log(response);
+    const cookieData = response;
+    console.log('Cookie Data:', cookieData);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+
 export const AuthContextProvider = () => {
     const loginApiCall = async (payload) =>{
         const config = {

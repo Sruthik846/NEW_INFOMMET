@@ -31,8 +31,9 @@ function Home() {
     });
   };
 
-  const cookieExists = checkCookieExists('dfkdfgkfdm');
+  const cookieExists = checkCookieExists('sessionn');
   console.log(cookieExists);
+
 
   const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
 
