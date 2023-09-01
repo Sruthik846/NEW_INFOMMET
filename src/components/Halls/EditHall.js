@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 
 function EditHall() {
+  const [token, setToken] = useState('')
   const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const data = location.state;
@@ -22,7 +23,15 @@ function EditHall() {
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
-  const token = Cookies.get("info_Authtoken");
+ 
+  axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
+  .then(response => {
+    const cookieData = response.data.auth;
+    setToken(cookieData);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);

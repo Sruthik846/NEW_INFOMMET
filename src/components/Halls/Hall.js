@@ -11,11 +11,27 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
 
 function Hall() {
+  const [token, setToken] = useState('')
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
-  const token = Cookies.get("info_Authtoken");
+
+  
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
+    .then(response => {
+      const cookieData = response.data.auth;
+      setToken(cookieData);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }, [])
+
+
+  console.log("token from hall", token);
   const navigate = useNavigate();
 
   const [showDeletemodal, setshowDeletemodal] = useState(false);
@@ -29,9 +45,9 @@ function Hall() {
 
   // GET DATA
   useEffect(() => {
-    if (!token) {
-      window.location.href = "/";
-    }
+    // if (!token) {
+    //   window.location.href = "/";
+    // }
     try {
       axios
         .get(`${apiUrl}/api/hall`, {
@@ -44,8 +60,8 @@ function Hall() {
           setHallList(response.data);
         })
         .catch((error) => {
-          // console.error('Error ',error['message']);
-          navigate("/networkError");
+          console.error('Error ',error);
+          // navigate("/networkError");
         });
     } catch (error) {
       navigate("/networkError");
@@ -70,6 +86,7 @@ function Hall() {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+
       },
     };
     try {
@@ -78,7 +95,7 @@ function Hall() {
         .then((response) => {
           // console.log(response.data);
           deleteDictById(selectedItemId);
-          // setshowsuccessMessage(response.data["message"]);
+          setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
           // console.error("Error : ", error.response["data"]);

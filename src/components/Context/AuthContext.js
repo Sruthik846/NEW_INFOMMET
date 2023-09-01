@@ -7,10 +7,10 @@ import Cookies from "universal-cookie";
 const AuthContext = createContext({})
 const cookies = new Cookies();
 
-  axios.get('http://localhost:5000/get-cookie-data')
+  axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
   .then(response => {
-    console.log(response);
-    const cookieData = response;
+    // console.log(response);
+    const cookieData = response.data.auth;
     console.log('Cookie Data:', cookieData);
   })
   .catch(error => {
@@ -31,8 +31,6 @@ export const AuthContextProvider = () => {
             withCredentials:true,
         }).then((response) =>{
             const token = response.data["token"];
-            const myCookieValue = cookies.get('info_Authtoken');
-          localStorage.setItem("info_Authtoken", token);
           Cookies.set("info_Authtoken", token);
           Cookies.set("email", ['admin@admin.com']);
           Cookies.set("password", ["admin@admin.com"],{httpOnly:true});

@@ -54,61 +54,47 @@ function Login() {
         })
         .then((response) => {
           const token = response.data["token"];
-
           settoken(token);
-
-          // localStorage.setItem("info_Authtoken", token);
-          // document.cookie = `dfkdfgkfdm=${token}; HttpOnly; Secure; SameSite=Strict`;
           Cookies.set("info_Authtoken", token);
-          Cookies.set("email", newUser["email"], { secure: true });
-          Cookies.set("password", newUser["password"], {
-            httpOnly: true,
-            secure: true,
-          });
-          Cookies.set("name", response.data["user"]["name"], {
-            httpOnly: true,
-          });
-          Cookies.set("ifid", response.data["user"]["if_id"], {
-            httpOnly: true,
-          });
-          Cookies.set("department", response.data["user"]["department"], {
-            httpOnly: true,
-          });
-          Cookies.set("user_type", response.data["user"]["user_type"], {
-            httpOnly: true,
-          });
+          Cookies.set("email", newUser["email"]);
+          Cookies.set("password", newUser["password"]);
+          Cookies.set("name", response.data["user"]["name"]);
+          Cookies.set("ifid", response.data["user"]["if_id"]);
+          Cookies.set("department", response.data["user"]["department"]);
+          Cookies.set("user_type", response.data["user"]["user_type"]);
           updateValue(token);
         });
-      
     } catch (err) {
       // setshowerrorMessage(err.response["data"]["message"]);
       navigate("/");
     }
-    
   };
 
-  const updateValue = async(tokens) => {
-    console.log("Before server", tokens);
-      await axios.post(
-        "http://localhost:5000/api/loginn",
-        { tokens },
-        { withCredentials: true }
-      );
-      console.log("After server", tokens);
-      window.location.href = "/home";
+  const updateValue = async (tokens) => {
+    await axios.post(
+      "http://localhost:5000/api/loginn",
+      { tokens },
+      { withCredentials: true }
+    );
+    window.location.href = "/home";
   };
-
-
-  
 
   useEffect(() => {
     const handleAuthChange = () => {
-      const authToken = Cookies.get("info_Authtoken");
-      if (authToken) {
-        setAuthenticated(true);
-      } else {
-        setAuthenticated(false);
-      }
+      axios
+        .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+        .then((response) => {
+          const cookieData = response.data.auth;
+          if (cookieData) {
+            setAuthenticated(true);
+          } else {
+            setAuthenticated(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      
     };
 
     window.addEventListener("storage", handleAuthChange);

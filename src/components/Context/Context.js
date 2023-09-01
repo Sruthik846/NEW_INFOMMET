@@ -9,24 +9,25 @@ const AuthProvider = ({ children }) => {
 
   const email = Cookies.get("email");
   const password = Cookies.get("password");
+  
 
   useEffect(() => {
-    const savedToken = Cookies.get("info_Authtoken");
-    if (savedToken) {
-      setToken(savedToken);
-      generateToken();
-    }
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // console.log(response);
+        const cookieData = response.data.auth;
+        if (cookieData) {
+          setToken(cookieData);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, []);
 
-  const generateToken = () => {
-    const expirationTime = new Date().getTime() + 2 * 60 * 60 * 1000; // 2 hours from now
-    return { value: token, expirationTime };
-  };
-
   const handleTokenExpiration = async () => {
-    if (!token || !token.expirationTime) {
-      updateToken("");
-      // console.log("Expired");
+    if (!token) {
       // If token is expired check for user exist. If user regenerate token , else redirect to login page
       if (email && password) {
         const newUser = {
@@ -44,9 +45,8 @@ const AuthProvider = ({ children }) => {
         await axios
           .post("https://meetingapi.infolksgroup.com/api/login", body, config)
           .then((response) => {
-            setToken(response.data["token"]);
-            generateToken();
-            Cookies.set("info_Authtoken", token);
+            const token = response.data["token"];
+            updateValue(token);
           });
       } else {
         <Login></Login>;
@@ -54,24 +54,37 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateValue = async (tokens) => {
+    await axios.post(
+      "http://localhost:5000/api/loginn",
+      { tokens },
+      { withCredentials: true }
+    );
+
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        const cookieData = response.data.auth;
+        setToken(cookieData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   // Automatically regenerate token after 2 hour
   useEffect(() => {
     const tokenExpirationTimeout = setTimeout(() => {
       handleTokenExpiration();
-    }, 2 * 60 * 60 * 1000); // 2 hour
+    },  2 * 60 * 60 * 1000); // 2 hour
 
     return () => {
       clearTimeout(tokenExpirationTimeout);
     };
   }, []);
 
-  const updateToken = async (newToken) => {
-    setToken(newToken);
-    Cookies.set("info_Authtoken", token);
-  };
-
   return (
-    <AuthContext.Provider value={{ token, updateToken }}>
+    <AuthContext.Provider value={{ token }}>
       {children}
     </AuthContext.Provider>
   );

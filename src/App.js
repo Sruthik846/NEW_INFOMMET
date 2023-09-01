@@ -18,6 +18,7 @@ import EditMeeting from "./components/Meetings/EditMeeting";
 import { Provider } from "react-redux";
 import store from "./store";
 import { CookiesProvider } from "react-cookie";
+import axios from "axios";
 import CookieMonitorMiddleware from "./CookieMonitorMiddleware";
 import {
   Route,
@@ -52,10 +53,22 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+
+
+  
+
   useEffect(() => {
-    const storedToken = Cookies.get("info_Authtoken");
-    setToken(storedToken);
+    axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
+  .then(response => {
+    const cookieData = response.data.auth;
+    setToken(cookieData);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
   }, []);
+
+  console.log("Token fhgfgj",token);
 
   return (
     <div className="App">
@@ -134,7 +147,7 @@ function App() {
                       <Route
                         path="/hall"
                         element={
-                          token ? <Hall></Hall> : <Navigate to="/"></Navigate>
+                          <Hall></Hall>
                         }
                       ></Route>
                     ) : (
@@ -241,7 +254,7 @@ function App() {
                     <Route
                       path="/hall"
                       element={
-                        token ? <Hall></Hall> : <Navigate to="/"></Navigate>
+                        <Hall></Hall>
                       }
                     ></Route>
                     <Route

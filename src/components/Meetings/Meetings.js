@@ -11,11 +11,11 @@ import { FaPlusCircle } from "react-icons/fa";
 function Meetings() {
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
-  const token = Cookies.get("info_Authtoken");
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const name = Cookies.get("name");
 
+  const [token, setToken] = useState('')
   const [completedData, setCompletedData] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [updateData, setUpdateData] = useState([]);
@@ -24,11 +24,23 @@ function Meetings() {
   const [showerrorMessage, setshowerrorMessage] = React.useState("");
   const [showDeletemodal, setshowDeletemodal] = useState(false);
 
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
+    .then(response => {
+      const cookieData = response.data.auth;
+      setToken(cookieData);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }, [])
+
   // --------------------------- GET MEETING LIST --------------------------------
   useEffect(() => {
-    if (!token) {
-      window.location.href = "/";
-    }
+    // if (!token) {
+    //   window.location.href = "/";
+    // }
     const config = {
       headers: {
         "Content-Type": "application/json",

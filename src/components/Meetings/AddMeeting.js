@@ -10,8 +10,9 @@ import TopNav from "../Navbar/TopNav";
 import Meetings from "./Meetings";
 
 function AddMeeting() {
+  const [token, setToken] = useState("");
   const apiUrl = process.env.REACT_APP_API_URL;
-  const token = Cookies.get("info_Authtoken");
+  // const token = Cookies.get("info_Authtoken");
   const ifid = Cookies.get("ifid");
   const name = Cookies.get("name");
   const department = Cookies.get("department");
@@ -19,6 +20,21 @@ function AddMeeting() {
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        const cookieData = response.data.auth;
+        setToken(cookieData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
+  console.log("token from hall", token);
+
+  // const [token, setToken] = useState('')
   const [meetingList, setMeetingList] = useState([]);
   const [TimeList, setTimeList] = useState([]);
   const alreadySelectedSlots = [];
@@ -33,9 +49,9 @@ function AddMeeting() {
 
   // ---------------------- GET TIME SLOTS ---------------------------------------
   useEffect(() => {
-    if (!token) {
-      window.location.href = "/";
-    }
+    // if (!token) {
+    //   window.location.href = "/";
+    // }
     try {
       const config = {
         headers: {
@@ -50,11 +66,12 @@ function AddMeeting() {
     } catch (error) {
       navigate("/networkError");
     }
-  }, [token, apiUrl, navigate] );
+  }, [token, apiUrl, navigate]);
 
   // --------------------------- GET MEETING LIST --------------------------------
   useEffect(() => {
     try {
+      console.log(token);
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -149,7 +166,7 @@ function AddMeeting() {
           // window.location.reload()
         })
         .catch((error) => {
-          console.error("Error : ", error["message"]);
+          console.error("Error : ", error);
           setshowerrorMessage(error["message"]);
         });
     } catch (error) {
