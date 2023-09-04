@@ -1,24 +1,37 @@
 import React, { createContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
 import axios from "axios";
 import Login from "../Login/Login";
 
 const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState("");
-
-  const email = Cookies.get("email");
-  const password = Cookies.get("password");
-  
+  const [ContexToken, setContexToken] = useState("");
+  const [emailCookie, setemailCookie] = useState("");
+  const [nameCookie, setnameCookie] = useState("");
+  const [passwordCookie, setpasswordCookie] = useState("");
+  const [ifidCookie, setifidCookie] = useState("");
+  const [deptCookie, setdeptCookie] = useState("");
+  const [userTypeCooklie, setuserTypeCooklie] = useState("");
 
   useEffect(() => {
     axios
       .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
       .then((response) => {
-        // console.log(response);
         const cookieData = response.data.auth;
+        const email = response.data.email;
+        const password = response.data.password;
+        const ifid = response.data.ifid;
+        const department = response.data.department;
+        const usertype = response.data.usertype;
+        const name = response.data.name;
+
         if (cookieData) {
-          setToken(cookieData);
+          setContexToken(cookieData);
+          setemailCookie(email);
+          setpasswordCookie(password);
+          setifidCookie(ifid);
+          setdeptCookie(department);
+          setuserTypeCooklie(usertype);
+          setnameCookie(name);
         }
       })
       .catch((error) => {
@@ -27,12 +40,12 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const handleTokenExpiration = async () => {
-    if (!token) {
-      // If token is expired check for user exist. If user regenerate token , else redirect to login page
-      if (email && password) {
+    if (!ContexToken) {
+      // If ContexToken is expired check for user exist. If user regenerate ContexToken , else redirect to login page
+      if (emailCookie && passwordCookie) {
         const newUser = {
-          email,
-          password,
+          emailCookie,
+          passwordCookie,
         };
 
         const config = {
@@ -45,8 +58,8 @@ const AuthProvider = ({ children }) => {
         await axios
           .post("https://meetingapi.infolksgroup.com/api/login", body, config)
           .then((response) => {
-            const token = response.data["token"];
-            updateValue(token);
+            const ContexToken = response.data["ContexToken"];
+            updateValue(ContexToken);
           });
       } else {
         <Login></Login>;
@@ -54,37 +67,47 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const updateValue = async (tokens) => {
+  const updateValue = async (ContexTokens) => {
     await axios.post(
       "http://localhost:5000/api/loginn",
-      { tokens },
+      { ContexTokens },
       { withCredentials: true }
     );
 
     axios
       .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
       .then((response) => {
-        const cookieData = response.data.auth;
-        setToken(cookieData);
+        const contextCookieData = response.data.auth;
+        setContexToken(contextCookieData);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   };
 
-  // Automatically regenerate token after 2 hour
+  // Automatically regenerate ContexToken after 2 hour
   useEffect(() => {
-    const tokenExpirationTimeout = setTimeout(() => {
+    const ContexTokenExpirationTimeout = setTimeout(() => {
       handleTokenExpiration();
-    },  2 * 60 * 60 * 1000); // 2 hour
+    }, 2 * 60 * 60 * 1000); // 2 hour
 
     return () => {
-      clearTimeout(tokenExpirationTimeout);
+      clearTimeout(ContexTokenExpirationTimeout);
     };
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token }}>
+    <AuthContext.Provider
+      value={{
+        ContexToken,
+        emailCookie,
+        passwordCookie,
+        nameCookie,
+        ifidCookie,
+        deptCookie,
+        userTypeCooklie,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

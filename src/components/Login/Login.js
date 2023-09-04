@@ -1,22 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import Cookies from "js-cookie";
-import cookie from "react-cookie";
 import Home from "../Home/Home";
-import AuthContext from "../Context/AuthContext";
-import { useCookies } from "react-cookie";
 
-// axios.defaults.withCredentials = true;
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showerrorMessage, setshowerrorMessage] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
   const [tokens, settoken] = useState("");
   const navigate = useNavigate();
-  const { loginApiCall } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -34,11 +28,6 @@ function Login() {
       password,
     };
     console.log(newUser);
-    const payload = {
-      email,
-      password,
-    };
-    // await loginApiCall(payload);
 
     try {
       const config = {
@@ -55,27 +44,52 @@ function Login() {
         .then((response) => {
           const token = response.data["token"];
           settoken(token);
-          Cookies.set("info_Authtoken", token);
-          Cookies.set("email", newUser["email"]);
-          Cookies.set("password", newUser["password"]);
-          Cookies.set("name", response.data["user"]["name"]);
-          Cookies.set("ifid", response.data["user"]["if_id"]);
-          Cookies.set("department", response.data["user"]["department"]);
-          Cookies.set("user_type", response.data["user"]["user_type"]);
-          updateValue(token);
+          const emailCookie = newUser["email"];
+          const passwordCookie = newUser["password"];
+          const nameCookie = response.data["user"]["name"];
+          const ifidCookie = response.data["user"]["if_id"];
+          const deptCookie = response.data["user"]["department"];
+          const userTypeCookie = response.data["user"]["user_type"];
+          console.log("usertype : ", userTypeCookie);
+          updateValue(
+            token,
+            emailCookie,
+            passwordCookie,
+            ifidCookie,
+            deptCookie,
+            userTypeCookie,
+            nameCookie
+          );
         });
     } catch (err) {
-      // setshowerrorMessage(err.response["data"]["message"]);
+      setshowerrorMessage(err.response["data"]["message"]);
       navigate("/");
     }
   };
 
-  const updateValue = async (tokens) => {
+  const updateValue = async (
+    tokens,
+    emailCookie,
+    passwordCookie,
+    ifidCookie,
+    deptCookie,
+    userTypeCookie,
+    nameCookie
+  ) => {
     await axios.post(
       "http://localhost:5000/api/loginn",
-      { tokens },
+      {
+        tokens,
+        emailCookie,
+        passwordCookie,
+        ifidCookie,
+        deptCookie,
+        userTypeCookie,
+        nameCookie,
+      },
       { withCredentials: true }
     );
+    console.log(emailCookie, ifidCookie);
     window.location.href = "/home";
   };
 
@@ -94,7 +108,6 @@ function Login() {
         .catch((error) => {
           console.error("Error:", error);
         });
-      
     };
 
     window.addEventListener("storage", handleAuthChange);

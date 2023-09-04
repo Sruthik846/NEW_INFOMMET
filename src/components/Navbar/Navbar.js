@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import Logout from "../Logout/Logout";
-import Cookies from "js-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "../Context/Context";
 
 function Navbar() {
-  const name = Cookies.get("name");
+  const { nameCookie } = useContext(AuthContext);
   return (
     <nav className=" dark:bg-gray-900 w-full z-20 top-0 left-0 border-gray-200 dark:border-gray-600 bg-gray-800 font-sans">
       <div className=" flex flex-wrap items-center justify-between mx-auto p-4">
@@ -16,7 +16,9 @@ function Navbar() {
             color="white"
             className="p-1 text-xl"
           />
-          <p className=" block text-md font-semibold text-white py-1">{name}</p>
+          <p className=" block text-md font-semibold text-white py-1">
+            {nameCookie}
+          </p>
         </div>
 
         <div className=" grid grid-cols-2 gap-1 md:order-2 items-right">

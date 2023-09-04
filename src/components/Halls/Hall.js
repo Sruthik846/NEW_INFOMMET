@@ -8,30 +8,15 @@ import TopNav from "../Navbar/TopNav";
 import { FaPlusCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
-import Cookies from "js-cookie";
+import { AuthContext } from "../Context/Context";
+import { useContext } from "react";
 
 function Hall() {
-  const [token, setToken] = useState('')
+  const { ContexToken } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
-
-  
-
-  useEffect(() => {
-    axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
-    .then(response => {
-      const cookieData = response.data.auth;
-      setToken(cookieData);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }, [])
-
-
-  console.log("token from hall", token);
   const navigate = useNavigate();
 
   const [showDeletemodal, setshowDeletemodal] = useState(false);
@@ -45,28 +30,27 @@ function Hall() {
 
   // GET DATA
   useEffect(() => {
-    // if (!token) {
-    //   window.location.href = "/";
-    // }
+    if (!ContexToken) {
+      window.location.href = "/";
+    }
     try {
       axios
         .get(`${apiUrl}/api/hall`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${ContexToken}`,
           },
         })
         .then((response) => {
-          // console.log(response.data);
           setHallList(response.data);
         })
         .catch((error) => {
-          console.error('Error ',error);
-          // navigate("/networkError");
+          console.error("Error ", error);
+          navigate("/networkError");
         });
     } catch (error) {
       navigate("/networkError");
     }
-  }, [token, apiUrl, navigate]);
+  }, [ContexToken, apiUrl, navigate]);
 
   // --------------------------------- DELETE HALL -------------------------------------
   const deleteDictById = (id) => {
@@ -81,24 +65,20 @@ function Hall() {
   };
 
   const handleDelete = async () => {
-    // console.log(selectedItemId);
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-
+        Authorization: `Bearer ${ContexToken}`,
       },
     };
     try {
       axios
         .delete(`${apiUrl}/api/hall/${selectedItemId}`, config)
         .then((response) => {
-          // console.log(response.data);
           deleteDictById(selectedItemId);
           setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          // console.error("Error : ", error.response["data"]);
           setshowerrorMessage(error.response["data"]);
         });
       setshowDeletemodal(false);
@@ -127,15 +107,13 @@ function Hall() {
       building,
     };
     try {
-      // console.log(newUser);
       axios
         .post(`${apiUrl}/api/hall`, newUser, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${ContexToken}`,
           },
         })
         .then((response) => {
-          // console.log(response.data);
           const updatedList = [...hallList, response.data["hall"]];
           setHallList(updatedList);
           setshowsuccessMessage(response.data["message"]);
@@ -169,16 +147,14 @@ function Hall() {
 
   const handleSave = (event) => {
     const updatedItem = { ...selectedEditItemId };
-    // console.log(updatedItem);
     try {
       axios
         .put(`${apiUrl}/api/hall/${updatedItem["id"]}`, updatedItem, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${ContexToken}`,
           },
         })
         .then((response) => {
-          // console.log(response.data);
           updateDictionary(updatedItem["id"], updatedItem);
           setshowsuccessMessage(response.data["message"]);
         })

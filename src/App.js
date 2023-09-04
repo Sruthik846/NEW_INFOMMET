@@ -7,7 +7,6 @@ import Meetings from "./components/Meetings/Meetings";
 import Hall from "./components/Halls/Hall";
 import { AuthProvider } from "./components/Context/Context";
 import Accesdenied from "./components/Error/404Error";
-import Cookies from "js-cookie";
 import Loading from "./components/Login/Loading";
 import AddHall from "./components/Halls/AddHall";
 import EditHall from "./components/Halls/EditHall";
@@ -27,20 +26,35 @@ import {
   Navigate,
 } from "react-router-dom";
 import NetworkError from "./components/Error/NetworkError";
-// import { AuthContextProvider} from './components/Context/AuthContext'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [restrictedLink, setLink] = useState(false);
   const [token, setToken] = useState("");
+  const [usertype, setUsertype] = useState("");
 
   const restrictedLinks = {
     user: ["/users", "/hall"],
     admin: [],
   };
-  const userType = Cookies.get("user_type");
-  if (userType && !restrictedLink) {
-    const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
+
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
+  .then(response => {
+    const cookieData = response.data.auth;
+    const usertype = response.data.usertype;
+    setToken(cookieData);
+    setUsertype(usertype);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+  }, []);
+
+
+  if (usertype && !restrictedLink) {
+    const hasRestrictedLinks = usertype && restrictedLinks[usertype].length > 0;
     if (hasRestrictedLinks !== false) {
       setLink(true);
     }
@@ -80,7 +94,7 @@ function App() {
               <Router>
                 {isLoading ? (
                   <Loading></Loading>
-                ) : userType ? (
+                ) : usertype ? (
                   <Routes>
                     <Route path="/loading" element={<Loading></Loading>} />
                     <Route

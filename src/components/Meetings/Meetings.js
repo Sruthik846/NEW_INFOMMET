@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Route, Routes, Link, Navigate } from "react-router-dom";
 import axios from "axios";
-import Cookies from "js-cookie";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import AddMeeting from "./AddMeeting";
-// import EditMeeting from "./EditMeeting";
 import TopNav from "../Navbar/TopNav";
 import { FaPlusCircle } from "react-icons/fa";
+import { AuthContext } from "../Context/Context";
 
 function Meetings() {
+  const { ContexToken } = useContext(AuthContext);
+  const { nameCookie } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
-  const name = Cookies.get("name");
 
-  const [token, setToken] = useState('')
   const [completedData, setCompletedData] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [updateData, setUpdateData] = useState([]);
@@ -24,27 +23,15 @@ function Meetings() {
   const [showerrorMessage, setshowerrorMessage] = React.useState("");
   const [showDeletemodal, setshowDeletemodal] = useState(false);
 
-
-  useEffect(() => {
-    axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
-    .then(response => {
-      const cookieData = response.data.auth;
-      setToken(cookieData);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }, [])
-
   // --------------------------- GET MEETING LIST --------------------------------
   useEffect(() => {
-    // if (!token) {
-    //   window.location.href = "/";
-    // }
+    if (!ContexToken) {
+      window.location.href = "/";
+    }
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${ContexToken}`,
       },
     };
     try {
@@ -52,6 +39,7 @@ function Meetings() {
         .get(`${apiUrl}/api/meeting-list`, config)
         .then((response) => {
           // convert date from datetime & save to updatedta
+
           const updatedList = response.data.map((item) => {
             const dateOnly = item.date.split("T")[0];
             const timeList = item.time.join(", ");
@@ -79,7 +67,7 @@ function Meetings() {
     } catch (error) {
       Navigate("/networkError");
     }
-  }, [token, apiUrl]);
+  }, [ContexToken, apiUrl]);
 
   // ---------------------------------------------------- DELETE DATA  ----------------------------------------
 
@@ -98,18 +86,15 @@ function Meetings() {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${ContexToken}`,
         },
       };
       axios
         .delete(`${apiUrl}/api/meeting/delete/${selectedItemId}`, config)
         .then((response) => {
-          // console.log(response.data);
           deleteDictById(selectedItemId);
-          // setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          console.error("Error : ", error.response["data"]);
           setshowerrorMessage(error.response["data"]);
         });
 
@@ -154,7 +139,7 @@ function Meetings() {
   const getContent = () => {
     if (selectedOption === "completed") {
       return completedData.map((item) =>
-        name === "Admin" ? (
+        nameCookie === "Admin" ? (
           <div
             className=" overflow-hidden shadow-lg p-4 rounded-md bg-gray-200 lg:bg-gray-700 md:bg-gray-700"
             key={item.id}
@@ -189,7 +174,7 @@ function Meetings() {
               <div>{item.department}</div>
             </div>
           </div>
-        ) : item.booked_by === name ? (
+        ) : item.booked_by === nameCookie ? (
           <div
             className=" overflow-hidden shadow-lg p-4 rounded-md bg-gray-200 lg:bg-gray-700 md:bg-gray-700"
             key={item.id}
@@ -229,7 +214,7 @@ function Meetings() {
     } else {
       return upcomingdata.length !== 0 ? (
         upcomingdata.map((item) =>
-          name === "Admin" ? (
+          nameCookie === "Admin" ? (
             <div
               className=" overflow-hidden shadow-lg p-4 rounded-md bg-gray-200 lg:bg-gray-700 md:bg-gray-700"
               key={item.id}
@@ -284,7 +269,7 @@ function Meetings() {
                 </button>
               </div>
             </div>
-          ) : item.booked_by === name ? (
+          ) : item.booked_by === nameCookie ? (
             <div
               className=" overflow-hidden shadow-lg p-4 rounded-md bg-gray-200 lg:bg-gray-700 md:bg-gray-700"
               key={item.id}

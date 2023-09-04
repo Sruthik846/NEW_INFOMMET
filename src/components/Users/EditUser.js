@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Users from "./Users";
-import Cookies from "js-cookie";
 import {
   faPencil,
   faEnvelope,
@@ -17,8 +16,10 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import { AuthContext } from "../Context/Context";
 
 function EditUser() {
+  const { ContexToken } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const data = location.state;
@@ -26,16 +27,15 @@ function EditUser() {
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
-  const token = Cookies.get("info_Authtoken");
 
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
   useEffect(() => {
-    if (!token) {
+    if (!ContexToken) {
       window.location.href = "/";
     }
-  }, [token]);
+  }, [ContexToken]);
 
   // Success message close
   const handleClose = () => {
@@ -57,20 +57,17 @@ function EditUser() {
   const handleSubmit = (event) => {
     event.preventDefault();
     editedItem.password = editedItem.plain_password;
-    // console.log(editedItem);
     try {
       axios
         .put(`${apiUrl}/api/user/${editedItem["id"]}`, editedItem, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${ContexToken}`,
           },
         })
         .then((response) => {
-          // console.log(response.data);
           setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          console.error("Error : ", error);
           setshowerrorMessage(error.response["data"]["errors"]);
         });
     } catch (error) {

@@ -1,40 +1,25 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import { useEffect } from "react";
-import Cookies from "js-cookie";
 import { faPencil, faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, Link, Routes, Route } from "react-router-dom";
 import TopNav from "../Navbar/TopNav";
 import Meetings from "./Meetings";
+import { AuthContext } from "../Context/Context";
 
 function AddMeeting() {
-  const [token, setToken] = useState("");
+  const { ContexToken } = useContext(AuthContext);
+  const { nameCookie } = useContext(AuthContext);
+  const { ifidCookie } = useContext(AuthContext);
+  const { deptCookie } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
-  // const token = Cookies.get("info_Authtoken");
-  const ifid = Cookies.get("ifid");
-  const name = Cookies.get("name");
-  const department = Cookies.get("department");
+
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        const cookieData = response.data.auth;
-        setToken(cookieData);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
-
-  console.log("token from hall", token);
-
-  // const [token, setToken] = useState('')
   const [meetingList, setMeetingList] = useState([]);
   const [TimeList, setTimeList] = useState([]);
   const alreadySelectedSlots = [];
@@ -49,33 +34,31 @@ function AddMeeting() {
 
   // ---------------------- GET TIME SLOTS ---------------------------------------
   useEffect(() => {
-    // if (!token) {
-    //   window.location.href = "/";
-    // }
+    if (!ContexToken) {
+      window.location.href = "/";
+    }
     try {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${ContexToken}`,
         },
       };
       axios.get(`${apiUrl}/api/slot`, config).then((response) => {
-        // console.log(response.data);
         setTimeList(response.data);
       });
     } catch (error) {
       navigate("/networkError");
     }
-  }, [token, apiUrl, navigate]);
+  }, [ContexToken, apiUrl, navigate]);
 
   // --------------------------- GET MEETING LIST --------------------------------
   useEffect(() => {
     try {
-      console.log(token);
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${ContexToken}`,
         },
       };
       axios
@@ -94,7 +77,7 @@ function AddMeeting() {
     } catch (error) {
       navigate("/networkError");
     }
-  }, [token, apiUrl, navigate]);
+  }, [ContexToken, apiUrl, navigate]);
 
   const handleButtonClick = (value) => {
     // If already exists remove it from the list
@@ -148,20 +131,19 @@ function AddMeeting() {
     const time = Object.values(selectedButtons).map((item) => item.time);
     newUser.slot = slot;
     newUser.time = time;
-    newUser.if_id = ifid;
-    newUser.booked_by = name;
-    newUser.department = department;
+    newUser.if_id = ifidCookie;
+    newUser.booked_by = nameCookie;
+    newUser.department = deptCookie;
     // console.log(newUser);
 
     try {
       axios
         .post(`${apiUrl}/api/booking`, newUser, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${ContexToken}`,
           },
         })
         .then((response) => {
-          console.log(response.data);
           setshowsuccessMessage("Meeting Created");
           // window.location.reload()
         })

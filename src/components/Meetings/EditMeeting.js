@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import { useState } from "react";
@@ -7,7 +7,6 @@ import axios from "axios";
 import { useEffect } from "react";
 import TopNav from "../Navbar/TopNav";
 import Meetings from "./Meetings";
-import Cookies from "js-cookie";
 import {
   useNavigate,
   useLocation,
@@ -15,18 +14,18 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import { AuthContext } from "../Context/Context";
 
 function EditMeeting() {
+  const { ContexToken } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
-  // const token = Cookies.get("info_Authtoken");
   const location = useLocation();
   const data = location.state;
   const [editedItem, setEditedItem] = useState({ ...data });
 
-  const [token, setToken] = useState('')
   const [meetingList, setMeetingList] = useState([]);
   const [showsuccessMessage, setshowsuccessMessage] = useState("");
   const alreadySelectedEditSlots = [];
@@ -34,15 +33,6 @@ function EditMeeting() {
   const [showerrorMessage, setshowerrorMessage] = useState([]);
   const [TimeList, setTimeList] = useState([]);
 
-
-  axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
-    .then(response => {
-      const cookieData = response.data.auth;
-      setToken(cookieData);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
 
   const handleClose = () => {
     setshowsuccessMessage("");
@@ -57,14 +47,14 @@ function EditMeeting() {
   // ---------------------- GET TIME SLOTS ---------------------------------------
 
   useEffect(() => {
-    if (!token) {
+    if (!ContexToken) {
       window.location.href = "/";
     }
     try {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${ContexToken}`,
         },
       };
       axios
@@ -79,7 +69,7 @@ function EditMeeting() {
     } catch (error) {
       navigate("/networkError");
     }
-  }, [token, editedItem.time, apiUrl, navigate]);
+  }, [ContexToken, editedItem.time, apiUrl, navigate]);
 
   const times = TimeList.map((item) => item.time);
 
@@ -90,7 +80,7 @@ function EditMeeting() {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${ContexToken}`,
         },
       };
       axios
@@ -106,7 +96,7 @@ function EditMeeting() {
         .catch((error) => {
           console.error(error);
         });
-    }, [token, apiUrl]);
+    }, [ContexToken, apiUrl]);
   } catch (error) {
     navigate("/networkError");
   }
@@ -137,7 +127,6 @@ function EditMeeting() {
     if (timeArray.includes(value)) {
       setTimeArray(timeArray.filter((button) => button !== value));
     } else {
-      console.log(value);
       setTimeArray([...timeArray, value]);
       // li = timeArray;
     }

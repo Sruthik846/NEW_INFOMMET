@@ -4,13 +4,14 @@ import Home from "../Home/Home";
 import Users from "../Users/Users";
 import Meetings from "../Meetings/Meetings";
 import Hall from "../Halls/Hall";
-import Cookies from "js-cookie";
+import { AuthContext } from "../Context/Context";
+import { useContext } from "react";
 
 function BottomNavigation() {
-  const name = Cookies.get("name");
+  const { nameCookie } = useContext(AuthContext);
   return (
     <div className="md:hidden font-sans">
-      {name === "Admin" ? (
+      {nameCookie === "Admin" ? (
         <div className="bottom-navigation bg-white flex fixed justify-between shadow-lg text-center py-1">
           <Link to="/home" className="text-gray-700 px-6">
             <div className="relative">

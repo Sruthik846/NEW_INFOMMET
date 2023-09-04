@@ -9,16 +9,18 @@ import Home from "../Home/Home";
 import Hall from "../Halls/Hall";
 import Users from "../Users/Users";
 import Meetings from "../Meetings/Meetings";
-import Cookies from "js-cookie";
+import { AuthContext } from "../Context/Context";
+import { useContext } from "react";
 
 function TopNav({ data, path }) {
-  const userType = Cookies.get("user_type");
+  const { userTypeCooklie } = useContext(AuthContext);
   const restrictedLinks = {
     user: ["/users", "/hall"], // Restricted links for the "user" user type
     admin: [], // Empty array for unrestricted links of "admin" user type
   };
 
-  const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
+  const hasRestrictedLinks =
+    userTypeCooklie && restrictedLinks[userTypeCooklie].length > 0;
 
   return (
     <nav className="bg-white lg:bg-gray-800 lg:text-gray-300 md:bg-gray-800 md:text-gray-300 shadow-lg font-sans fixed w-full">

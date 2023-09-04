@@ -2,13 +2,6 @@ import React, { useEffect } from "react";
 // import { useCookies, withCookies } from "react-cookie";
 
 function CookieMonitorMiddleware({ children }) {
-  // const [cookies] = useCookies(["email"]);
-  // const isCookieExist = cookies.cookieName !== undefined;
-  // console.log(isCookieExist);
-
-  // console.log(withCookies("email"));
-  // console.log(document.cookie);
-  // console.log(document.cookie.includes("email"));
 
   useEffect(() => {
     const handleStorageChange = (event) => {

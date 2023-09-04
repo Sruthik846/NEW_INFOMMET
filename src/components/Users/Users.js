@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import { FaUserPlus } from "react-icons/fa";
 import axios from "axios";
@@ -9,12 +9,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
+import { AuthContext } from "../Context/Context";
 
 function Users() {
+  const { ContexToken } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
-  const token = Cookies.get("info_Authtoken");
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
 
   const navigate = useNavigate();
@@ -29,14 +30,14 @@ function Users() {
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showAddmodal, setshowAddmodal] = React.useState(false);
 
-  const isAuthenticated = useSelector((state) => state.isAuthenticated);
-  useEffect(() => {
-    // console.log(isAuthenticated);
-    if (!isAuthenticated) {
-      console.log("COOKIE DELETED");
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
+  // const isAuthenticated = useSelector((state) => state.isAuthenticated);
+  // useEffect(() => {
+  //   // console.log(isAuthenticated);
+  //   if (!isAuthenticated) {
+  //     console.log("COOKIE DELETED");
+  //     navigate("/");
+  //   }
+  // }, [isAuthenticated, navigate]);
 
   const handleSearch = (event) => {
     const searchTerm = event.target.value;
@@ -49,14 +50,14 @@ function Users() {
   };
 
   useEffect(() => {
-    if (!token) {
+    if (!ContexToken) {
       window.location.href = "/";
     }
     try {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${ContexToken}`,
         },
       };
       axios
@@ -71,7 +72,7 @@ function Users() {
     } catch (error) {
       navigate("/networkError");
     }
-  }, [token, apiUrl, navigate]);
+  }, [ContexToken, apiUrl, navigate]);
 
   // ---------------------------------- DELETE USER --------------------------------------
   const deleteDictById = (id) => {
@@ -91,7 +92,7 @@ function Users() {
       const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${ContexToken}`,
         },
       };
       axios
@@ -179,7 +180,7 @@ function Users() {
       await axios
         .post(`${apiUrl}/api/user`, formData, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${ContexToken}`,
           },
         })
         .then((response) => {

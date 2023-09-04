@@ -5,17 +5,19 @@ import Navbar from "../Navbar/Navbar";
 import Users from "../Users/Users";
 import Meetings from "../Meetings/Meetings";
 import Hall from "../Halls/Hall";
-import Cookies from "js-cookie";
 import BottomNavigation from "../Navbar/BottomNavigation";
+import { AuthContext } from "../Context/Context";
+import { useContext } from "react";
 
 function Home() {
-  const userType = Cookies.get("user_type");
+  const { userTypeCooklie } = useContext(AuthContext);
   const restrictedLinks = {
     user: ["/users", "/hall"], // Restricted links for the "user" user type
     admin: [], // Empty array for unrestricted links of "admin" user type
   };
 
-  const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
+  const hasRestrictedLinks =
+    userTypeCooklie && restrictedLinks[userTypeCooklie].length > 0;
 
   return (
     <div className="font-sans">

@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, Route, Routes, Link } from "react-router-dom";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Users from "./Users";
-import Cookies from "js-cookie";
 import {
   faPencil,
   faEnvelope,
   faCircleArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "../Context/Context";
 
 function AddUser() {
+  const { ContexToken } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
   const navigate = useNavigate();
-  const token = Cookies.get("info_Authtoken");
 
   const [showsuccessMessage, setshowsuccessMessage] = useState("");
   const [showerrorMessage, setshowerrorMessage] = useState([]);
 
   useEffect(() => {
-    if (!token) {
+    if (!ContexToken) {
       window.location.href = "/";
     }
-  }, [token]);
+  }, [ContexToken]);
 
   // Success message close
   const handleClose = () => {
@@ -62,19 +62,18 @@ function AddUser() {
       department,
       password,
     };
-    // console.log(newUser);
     try {
       axios
         .post(`${apiUrl}/api/user`, newUser, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${ContexToken}`,
           },
         })
         .then((response) => {
           setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          console.error("Error : ", error.response["data"]);
+          // console.error("Error : ", error.response["data"]);
           setshowerrorMessage(error.response["data"]);
         });
     } catch (error) {
