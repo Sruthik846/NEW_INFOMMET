@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import Login from "../Login/Login";
+import Logout from "../Logout/Logout";
 
 const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
@@ -13,7 +14,8 @@ const AuthProvider = ({ children }) => {
   const [userTypeCooklie, setuserTypeCooklie] = useState("");
 
   useEffect(() => {
-    axios
+    const interval = setInterval(() => {
+      axios
       .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
       .then((response) => {
         const cookieData = response.data.auth;
@@ -32,20 +34,31 @@ const AuthProvider = ({ children }) => {
           setdeptCookie(department);
           setuserTypeCooklie(usertype);
           setnameCookie(name);
+        } else{
+          const condition = true;
+          handleTokenExpiration(condition,email,password);
         }
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+    }, 1000); // Check every second (1000 milliseconds)
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(interval);
+
+    
   }, []);
 
-  const handleTokenExpiration = async () => {
-    if (!ContexToken) {
+
+  const handleTokenExpiration = async (condition,email,password) => {
+    if (condition) {
       // If ContexToken is expired check for user exist. If user regenerate ContexToken , else redirect to login page
-      if (emailCookie && passwordCookie) {
+      console.log('Data ',email, password)
+      if (email && password) {
         const newUser = {
-          emailCookie,
-          passwordCookie,
+          email,
+          password,
         };
 
         const config = {
@@ -58,21 +71,56 @@ const AuthProvider = ({ children }) => {
         await axios
           .post("https://meetingapi.infolksgroup.com/api/login", body, config)
           .then((response) => {
-            const ContexToken = response.data["ContexToken"];
-            updateValue(ContexToken);
+            console.log(response.data);
+            const ContexToken = response.data["token"];
+            const emailCookie = newUser["email"];
+            const passwordCookie = newUser["password"];
+            const nameCookie = response.data["user"]["name"];
+            const ifidCookie = response.data["user"]["if_id"];
+            const deptCookie = response.data["user"]["department"];
+            const userTypeCookie = response.data["user"]["user_type"];
+            console.log("usertype : ", userTypeCookie);
+            updateValue(
+              ContexToken,
+              emailCookie,
+              passwordCookie,
+              ifidCookie,
+              deptCookie,
+              userTypeCookie,
+              nameCookie
+            );
           });
       } else {
-        <Login></Login>;
+        console.log("redirected to login");
+        <Login></Login>
       }
     }
   };
 
-  const updateValue = async (ContexTokens) => {
+  const updateValue = async (
+    tokens,
+    emailCookie,
+    passwordCookie,
+    ifidCookie,
+    deptCookie,
+    userTypeCookie,
+    nameCookie
+  ) => {
     await axios.post(
       "http://localhost:5000/api/loginn",
-      { ContexTokens },
+      {
+        tokens,
+        emailCookie,
+        passwordCookie,
+        ifidCookie,
+        deptCookie,
+        userTypeCookie,
+        nameCookie,
+      },
       { withCredentials: true }
     );
+    console.log(emailCookie, ifidCookie);
+  
 
     axios
       .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
@@ -85,16 +133,7 @@ const AuthProvider = ({ children }) => {
       });
   };
 
-  // Automatically regenerate ContexToken after 2 hour
-  useEffect(() => {
-    const ContexTokenExpirationTimeout = setTimeout(() => {
-      handleTokenExpiration();
-    }, 2 * 60 * 60 * 1000); // 2 hour
 
-    return () => {
-      clearTimeout(ContexTokenExpirationTimeout);
-    };
-  }, []);
 
   return (
     <AuthContext.Provider

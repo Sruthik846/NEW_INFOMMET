@@ -82,8 +82,6 @@ function App() {
   });
   }, []);
 
-  console.log("Token fhgfgj",token);
-
   return (
     <div className="App">
       {/* <AuthContextProvider> */}

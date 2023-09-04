@@ -50,7 +50,6 @@ function Login() {
           const ifidCookie = response.data["user"]["if_id"];
           const deptCookie = response.data["user"]["department"];
           const userTypeCookie = response.data["user"]["user_type"];
-          console.log("usertype : ", userTypeCookie);
           updateValue(
             token,
             emailCookie,
