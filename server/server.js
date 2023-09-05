@@ -62,7 +62,7 @@ app.post("/api/loginn", (req, res) => {
     httpOnly: true,
     sameSite: "strict",
   });
-
+  console.log(req.cookies.authToken);
   res.status(200).json({ success: true });
 });
 

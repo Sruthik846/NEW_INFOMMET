@@ -4,6 +4,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Home from "../Home/Home";
+import CryptoJS from "crypto-js";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,10 +43,16 @@ function Login() {
           withCredentials: true,
         })
         .then((response) => {
-          const token = response.data["token"];
-          settoken(token);
+          const ContexToken = response.data["token"];
+          settoken(ContexToken);
+          
+          // decryption
+          const token = CryptoJS.AES.encrypt(ContexToken, 'secret-key').toString();
           const emailCookie = newUser["email"];
-          const passwordCookie = newUser["password"];
+
+          const passworData = newUser["password"];
+          const passwordCookie = CryptoJS.AES.encrypt(passworData, 'secret-key').toString();
+
           const nameCookie = response.data["user"]["name"];
           const ifidCookie = response.data["user"]["if_id"];
           const deptCookie = response.data["user"]["department"];

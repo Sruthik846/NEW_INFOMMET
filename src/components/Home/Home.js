@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes, Link } from "react-router-dom";
 import { FaUsers, FaMeetup, FaHotel } from "react-icons/fa";
 import Navbar from "../Navbar/Navbar";
@@ -8,9 +8,11 @@ import Hall from "../Halls/Hall";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import { AuthContext } from "../Context/Context";
 import { useContext } from "react";
+import { useState } from "react";
 
 function Home() {
   const { userTypeCooklie } = useContext(AuthContext);
+
   const restrictedLinks = {
     user: ["/users", "/hall"], // Restricted links for the "user" user type
     admin: [], // Empty array for unrestricted links of "admin" user type

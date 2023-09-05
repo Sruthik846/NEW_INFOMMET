@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import Login from "../Login/Login";
-import Logout from "../Logout/Logout";
+import CryptoJS from "crypto-js";
 
 const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
@@ -12,15 +12,23 @@ const AuthProvider = ({ children }) => {
   const [ifidCookie, setifidCookie] = useState("");
   const [deptCookie, setdeptCookie] = useState("");
   const [userTypeCooklie, setuserTypeCooklie] = useState("");
+  const [encrptedData, setEncrptedData] = useState("");
+  const [decrptedData, setDecrptedData] = useState("");
+
 
   useEffect(() => {
     const interval = setInterval(() => {
       axios
       .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
       .then((response) => {
-        const cookieData = response.data.auth;
+        
+        const tokenData = response.data.auth;
+        const cookieData = CryptoJS.AES.decrypt(tokenData, 'secret-key').toString(CryptoJS.enc.Utf8);
         const email = response.data.email;
-        const password = response.data.password;
+
+        const passworData = response.data.password;
+        const password = CryptoJS.AES.decrypt(passworData, 'secret-key').toString(CryptoJS.enc.Utf8);
+
         const ifid = response.data.ifid;
         const department = response.data.department;
         const usertype = response.data.usertype;
@@ -54,7 +62,6 @@ const AuthProvider = ({ children }) => {
   const handleTokenExpiration = async (condition,email,password) => {
     if (condition) {
       // If ContexToken is expired check for user exist. If user regenerate ContexToken , else redirect to login page
-      console.log('Data ',email, password)
       if (email && password) {
         const newUser = {
           email,
@@ -91,7 +98,6 @@ const AuthProvider = ({ children }) => {
             );
           });
       } else {
-        console.log("redirected to login");
         <Login></Login>
       }
     }
@@ -121,7 +127,6 @@ const AuthProvider = ({ children }) => {
     );
     console.log(emailCookie, ifidCookie);
   
-
     axios
       .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
       .then((response) => {
@@ -132,6 +137,34 @@ const AuthProvider = ({ children }) => {
         console.error("Error:", error);
       });
   };
+
+
+
+  // console.log(ContexToken);
+
+  // useEffect(() => {
+  //   try {
+  //     // Encrypt the input text whenever it changes
+  //     const encrypted = CryptoJS.AES.encrypt(ContexToken, 'secret-key').toString();
+  //     setEncrptedData(encrypted);
+  //   } catch (error) {
+  //     console.error('Encryption error:', error.message);
+  //   }
+  // }, [ContexToken]);
+
+  // console.log("Encrypted token",encrptedData);
+
+  // useEffect(() => {
+  //   try {
+  //     // Decrypt the encrypted text whenever it changes
+  //     const decrypted = CryptoJS.AES.decrypt(encrptedData, 'secret-key').toString(CryptoJS.enc.Utf8);
+  //     setDecrptedData(decrypted);
+  //   } catch (error) {
+  //     console.error('Decryption error:', error.message);
+  //   }
+  // }, [encrptedData]);
+
+  // console.log("Decrypted token",decrptedData);
 
 
 

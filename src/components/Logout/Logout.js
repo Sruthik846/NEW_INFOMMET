@@ -1,28 +1,20 @@
 import React from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import axios from "axios";
-// import { AuthContext } from "../Context/Context";
+import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
-import { useState } from "react";
+import { useContext } from "react";
+
 
 function Logout() {
-  const [token, setToken] = useState("");
-  axios
-    .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-    .then((response) => {
-      const cookieData = response.data.auth;
-      setToken(cookieData);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+  const { ContexToken } = useContext(AuthContext);
 
   // const { updateToken } = useContext(AuthContext);
   const handleLogout = async () => {
     await axios
       .post("http://meetingapi.infolksgroup.com/api/logout", null, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${ContexToken}`,
         },
       })
       .then((response) => {
