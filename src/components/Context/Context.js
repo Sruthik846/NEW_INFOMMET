@@ -24,15 +24,24 @@ const AuthProvider = ({ children }) => {
         
         const tokenData = response.data.auth;
         const cookieData = CryptoJS.AES.decrypt(tokenData, 'secret-key').toString(CryptoJS.enc.Utf8);
-        const email = response.data.email;
+
+        const emailData = response.data.email;
+        const email = CryptoJS.AES.decrypt(emailData, 'secret-key').toString(CryptoJS.enc.Utf8);
 
         const passworData = response.data.password;
         const password = CryptoJS.AES.decrypt(passworData, 'secret-key').toString(CryptoJS.enc.Utf8);
 
-        const ifid = response.data.ifid;
-        const department = response.data.department;
-        const usertype = response.data.usertype;
-        const name = response.data.name;
+        const ifidData = response.data.ifid;
+        const ifid = CryptoJS.AES.decrypt(ifidData, 'secret-key').toString(CryptoJS.enc.Utf8);
+
+        const departmentData = response.data.department;
+        const department = CryptoJS.AES.decrypt(departmentData, 'secret-key').toString(CryptoJS.enc.Utf8);
+
+        const usertypeData = response.data.usertype;
+        const usertype = CryptoJS.AES.decrypt(usertypeData, 'secret-key').toString(CryptoJS.enc.Utf8);
+
+        const nameData = response.data.name;
+        const name = CryptoJS.AES.decrypt(nameData, 'secret-key').toString(CryptoJS.enc.Utf8);
 
         if (cookieData) {
           setContexToken(cookieData);

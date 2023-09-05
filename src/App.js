@@ -26,6 +26,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import NetworkError from "./components/Error/NetworkError";
+import CryptoJS from "crypto-js";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -42,8 +43,11 @@ function App() {
   useEffect(() => {
     axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
   .then(response => {
-    const cookieData = response.data.auth;
-    const usertype = response.data.usertype;
+    const tokenData = response.data.auth;
+    const cookieData = CryptoJS.AES.decrypt(tokenData, 'secret-key').toString(CryptoJS.enc.Utf8);
+
+    const usertypeData = response.data.usertype;
+    const usertype = CryptoJS.AES.decrypt(usertypeData, 'secret-key').toString(CryptoJS.enc.Utf8);
     setToken(cookieData);
     setUsertype(usertype);
   })
@@ -74,7 +78,8 @@ function App() {
   useEffect(() => {
     axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
   .then(response => {
-    const cookieData = response.data.auth;
+    const tokenData = response.data.auth;
+    const cookieData = CryptoJS.AES.decrypt(tokenData, 'secret-key').toString(CryptoJS.enc.Utf8);
     setToken(cookieData);
   })
   .catch(error => {
