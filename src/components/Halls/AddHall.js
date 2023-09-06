@@ -18,10 +18,19 @@ function AddHall() {
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
   useEffect(() => {
-    if (!ContexToken) {
-      window.location.href = "/";
-    }
-  }, [ContexToken]);
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
 
   // Success message close
   const handleClose = () => {
@@ -45,6 +54,18 @@ function AddHall() {
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  axios
+    .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+    .then((response) => {
+      // Decrypt data from server to clent side
+      const tokenData = response.data.auth;
+      if (!tokenData) {
+        window.location.href = "/";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -53,6 +74,15 @@ function AddHall() {
       floor,
       building,
     };
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          navigate("/");
+        }
+      });
 
     try {
       axios
@@ -68,7 +98,6 @@ function AddHall() {
           setshowerrorMessage(error.response["data"]);
         });
     } catch (error) {
-      // Handle the error gracefully
       navigate("/networkError");
     }
   };

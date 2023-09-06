@@ -12,63 +12,76 @@ const AuthProvider = ({ children }) => {
   const [ifidCookie, setifidCookie] = useState("");
   const [deptCookie, setdeptCookie] = useState("");
   const [userTypeCooklie, setuserTypeCooklie] = useState("");
-  const [encrptedData, setEncrptedData] = useState("");
-  const [decrptedData, setDecrptedData] = useState("");
-
 
   useEffect(() => {
     const interval = setInterval(() => {
       axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        
-        const tokenData = response.data.auth;
-        const cookieData = CryptoJS.AES.decrypt(tokenData, 'secret-key').toString(CryptoJS.enc.Utf8);
+        .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+        .then((response) => {
+          // Decrypt data from server to clent side
+          const tokenData = response.data.auth;
+          const cookieData = CryptoJS.AES.decrypt(
+            tokenData,
+            "secret-key"
+          ).toString(CryptoJS.enc.Utf8);
+          console.log("Cookie data : ", cookieData);
 
-        const emailData = response.data.email;
-        const email = CryptoJS.AES.decrypt(emailData, 'secret-key').toString(CryptoJS.enc.Utf8);
+          const emailData = response.data.email;
+          const email = CryptoJS.AES.decrypt(emailData, "secret-key").toString(
+            CryptoJS.enc.Utf8
+          );
 
-        const passworData = response.data.password;
-        const password = CryptoJS.AES.decrypt(passworData, 'secret-key').toString(CryptoJS.enc.Utf8);
+          const passworData = response.data.password;
+          const password = CryptoJS.AES.decrypt(
+            passworData,
+            "secret-key"
+          ).toString(CryptoJS.enc.Utf8);
 
-        const ifidData = response.data.ifid;
-        const ifid = CryptoJS.AES.decrypt(ifidData, 'secret-key').toString(CryptoJS.enc.Utf8);
+          const ifidData = response.data.ifid;
+          const ifid = CryptoJS.AES.decrypt(ifidData, "secret-key").toString(
+            CryptoJS.enc.Utf8
+          );
 
-        const departmentData = response.data.department;
-        const department = CryptoJS.AES.decrypt(departmentData, 'secret-key').toString(CryptoJS.enc.Utf8);
+          const departmentData = response.data.department;
+          const department = CryptoJS.AES.decrypt(
+            departmentData,
+            "secret-key"
+          ).toString(CryptoJS.enc.Utf8);
 
-        const usertypeData = response.data.usertype;
-        const usertype = CryptoJS.AES.decrypt(usertypeData, 'secret-key').toString(CryptoJS.enc.Utf8);
+          const usertypeData = response.data.usertype;
+          const usertype = CryptoJS.AES.decrypt(
+            usertypeData,
+            "secret-key"
+          ).toString(CryptoJS.enc.Utf8);
 
-        const nameData = response.data.name;
-        const name = CryptoJS.AES.decrypt(nameData, 'secret-key').toString(CryptoJS.enc.Utf8);
+          const nameData = response.data.name;
+          const name = CryptoJS.AES.decrypt(nameData, "secret-key").toString(
+            CryptoJS.enc.Utf8
+          );
 
-        if (cookieData) {
-          setContexToken(cookieData);
-          setemailCookie(email);
-          setpasswordCookie(password);
-          setifidCookie(ifid);
-          setdeptCookie(department);
-          setuserTypeCooklie(usertype);
-          setnameCookie(name);
-        } else{
-          const condition = true;
-          handleTokenExpiration(condition,email,password);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+          if (cookieData) {
+            setContexToken(cookieData);
+            setemailCookie(email);
+            setpasswordCookie(password);
+            setifidCookie(ifid);
+            setdeptCookie(department);
+            setuserTypeCooklie(usertype);
+            setnameCookie(name);
+          } else {
+            const condition = true;
+            handleTokenExpiration(condition, email, password);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }, 1000); // Check every second (1000 milliseconds)
 
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
-
-    
   }, []);
 
-
-  const handleTokenExpiration = async (condition,email,password) => {
+  const handleTokenExpiration = async (condition, email, password) => {
     if (condition) {
       // If ContexToken is expired check for user exist. If user regenerate ContexToken , else redirect to login page
       if (email && password) {
@@ -107,7 +120,7 @@ const AuthProvider = ({ children }) => {
             );
           });
       } else {
-        <Login></Login>
+        <Login></Login>;
       }
     }
   };
@@ -135,7 +148,7 @@ const AuthProvider = ({ children }) => {
       { withCredentials: true }
     );
     console.log(emailCookie, ifidCookie);
-  
+
     axios
       .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
       .then((response) => {
@@ -146,36 +159,6 @@ const AuthProvider = ({ children }) => {
         console.error("Error:", error);
       });
   };
-
-
-
-  // console.log(ContexToken);
-
-  // useEffect(() => {
-  //   try {
-  //     // Encrypt the input text whenever it changes
-  //     const encrypted = CryptoJS.AES.encrypt(ContexToken, 'secret-key').toString();
-  //     setEncrptedData(encrypted);
-  //   } catch (error) {
-  //     console.error('Encryption error:', error.message);
-  //   }
-  // }, [ContexToken]);
-
-  // console.log("Encrypted token",encrptedData);
-
-  // useEffect(() => {
-  //   try {
-  //     // Decrypt the encrypted text whenever it changes
-  //     const decrypted = CryptoJS.AES.decrypt(encrptedData, 'secret-key').toString(CryptoJS.enc.Utf8);
-  //     setDecrptedData(decrypted);
-  //   } catch (error) {
-  //     console.error('Decryption error:', error.message);
-  //   }
-  // }, [encrptedData]);
-
-  // console.log("Decrypted token",decrptedData);
-
-
 
   return (
     <AuthContext.Provider

@@ -10,7 +10,6 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showerrorMessage, setshowerrorMessage] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
-  const [tokens, settoken] = useState("");
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -44,29 +43,49 @@ function Login() {
         })
         .then((response) => {
           const ContexToken = response.data["token"];
-          settoken(ContexToken);
-          
+
           // decryption
-          const token = CryptoJS.AES.encrypt(ContexToken, 'secret-key').toString();
+          const token = CryptoJS.AES.encrypt(
+            ContexToken,
+            "secret-key"
+          ).toString();
 
           const emailData = newUser["email"];
-          const emailCookie = CryptoJS.AES.encrypt(emailData, 'secret-key').toString();
+          const emailCookie = CryptoJS.AES.encrypt(
+            emailData,
+            "secret-key"
+          ).toString();
 
           const passworData = newUser["password"];
-          const passwordCookie = CryptoJS.AES.encrypt(passworData, 'secret-key').toString();
+          const passwordCookie = CryptoJS.AES.encrypt(
+            passworData,
+            "secret-key"
+          ).toString();
 
           const nameData = response.data["user"]["name"];
-          const nameCookie = CryptoJS.AES.encrypt(nameData, 'secret-key').toString();
+          const nameCookie = CryptoJS.AES.encrypt(
+            nameData,
+            "secret-key"
+          ).toString();
 
           const ifidData = response.data["user"]["if_id"];
-          const ifidCookie = CryptoJS.AES.encrypt(ifidData, 'secret-key').toString();
+          const ifidCookie = CryptoJS.AES.encrypt(
+            ifidData,
+            "secret-key"
+          ).toString();
 
           const deptData = response.data["user"]["department"];
-          const deptCookie = CryptoJS.AES.encrypt(deptData, 'secret-key').toString();
+          const deptCookie = CryptoJS.AES.encrypt(
+            deptData,
+            "secret-key"
+          ).toString();
 
-          const userTypeData= response.data["user"]["user_type"];
-          const userTypeCookie = CryptoJS.AES.encrypt(userTypeData, 'secret-key').toString();
-          
+          const userTypeData = response.data["user"]["user_type"];
+          const userTypeCookie = CryptoJS.AES.encrypt(
+            userTypeData,
+            "secret-key"
+          ).toString();
+
           updateValue(
             token,
             emailCookie,

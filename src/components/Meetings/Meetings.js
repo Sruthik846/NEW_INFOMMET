@@ -24,10 +24,21 @@ function Meetings() {
   const [showDeletemodal, setshowDeletemodal] = useState(false);
 
   // --------------------------- GET MEETING LIST --------------------------------
+
   useEffect(() => {
-    if (!ContexToken) {
-      window.location.href = "/";
-    }
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -62,6 +73,7 @@ function Meetings() {
           setCompletedData(completedDates);
         })
         .catch((error) => {
+          console.log(ContexToken);
           console.error(error);
         });
     } catch (error) {
@@ -82,6 +94,19 @@ function Meetings() {
     setshowDeletemodal(true);
   };
   const handleDelete = async () => {
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     try {
       const config = {
         headers: {

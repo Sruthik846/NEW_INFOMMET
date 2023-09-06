@@ -11,7 +11,6 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../Context/Context";
 import { useContext } from "react";
 
-
 function Hall() {
   const { ContexToken } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -29,12 +28,23 @@ function Hall() {
   const [selectedEditItemId, setSelectedEditItemId] = useState(null);
   const [showEditHall, setshowEditHall] = React.useState(false);
 
-  
+  const checkToken = async () => {
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   // GET DATA
   useEffect(() => {
-    if (!ContexToken) {
-      window.location.href = "/";
-    }
+    checkToken();
     try {
       axios
         .get(`${apiUrl}/api/hall`, {
@@ -67,6 +77,7 @@ function Hall() {
   };
 
   const handleDelete = async () => {
+    checkToken();
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -102,6 +113,7 @@ function Hall() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
+    checkToken();
     e.preventDefault();
     const newUser = {
       hall,
@@ -148,6 +160,7 @@ function Hall() {
   };
 
   const handleSave = (event) => {
+    checkToken();
     const updatedItem = { ...selectedEditItemId };
     try {
       axios

@@ -7,8 +7,6 @@ import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
-import Cookies from "js-cookie";
 import { AuthContext } from "../Context/Context";
 
 function Users() {
@@ -30,15 +28,6 @@ function Users() {
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showAddmodal, setshowAddmodal] = React.useState(false);
 
-  // const isAuthenticated = useSelector((state) => state.isAuthenticated);
-  // useEffect(() => {
-  //   // console.log(isAuthenticated);
-  //   if (!isAuthenticated) {
-  //     console.log("COOKIE DELETED");
-  //     navigate("/");
-  //   }
-  // }, [isAuthenticated, navigate]);
-
   const handleSearch = (event) => {
     const searchTerm = event.target.value;
     setSearchTerm(searchTerm);
@@ -50,9 +39,19 @@ function Users() {
   };
 
   useEffect(() => {
-    if (!ContexToken) {
-      window.location.href = "/";
-    }
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     try {
       const config = {
         headers: {
@@ -82,6 +81,19 @@ function Users() {
   };
 
   const openDeleteModal = (itemId) => {
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     // console.log("Deleted itemId : ", itemId);
     setSelectedItemId(itemId);
     setshowDeletemodal(true);
@@ -133,6 +145,19 @@ function Users() {
   };
 
   const handleSave = (event) => {
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     event.preventDefault();
     const updatedItem = { ...selectedEditItemId };
 
@@ -173,6 +198,19 @@ function Users() {
     });
   };
   const onSubmit = async (e) => {
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     e.preventDefault();
 
     // console.log(formData);

@@ -62,7 +62,6 @@ app.post("/api/loginn", (req, res) => {
     httpOnly: true,
     sameSite: "strict",
   });
-  console.log(req.cookies.authToken);
   res.status(200).json({ success: true });
 });
 
@@ -88,7 +87,6 @@ app.get("/get-cookie-data", (req, res) => {
 
 // Clear cookie
 app.get("/clear-cookie", (req, res) => {
-  console.log("Clear cookie");
   res.clearCookie("authToken", { httpOnly: true });
   res.clearCookie("email", { httpOnly: true });
   res.clearCookie("password", { httpOnly: true });

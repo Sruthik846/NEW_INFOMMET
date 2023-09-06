@@ -34,9 +34,19 @@ function AddMeeting() {
 
   // ---------------------- GET TIME SLOTS ---------------------------------------
   useEffect(() => {
-    if (!ContexToken) {
-      window.location.href = "/";
-    }
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     try {
       const config = {
         headers: {
@@ -61,19 +71,14 @@ function AddMeeting() {
           Authorization: `Bearer ${ContexToken}`,
         },
       };
-      axios
-        .get(`${apiUrl}/api/meeting-list`, config)
-        .then((response) => {
-          // convert date from datetime & save to updatedta
-          const updatedList = response.data.map((item) => {
-            const dateOnly = item.date.split("T")[0];
-            return { ...item, date: dateOnly };
-          });
-          setMeetingList(updatedList);
-        })
-        .catch((error) => {
-          console.error(error);
+      axios.get(`${apiUrl}/api/meeting-list`, config).then((response) => {
+        // convert date from datetime & save to updatedta
+        const updatedList = response.data.map((item) => {
+          const dateOnly = item.date.split("T")[0];
+          return { ...item, date: dateOnly };
         });
+        setMeetingList(updatedList);
+      });
     } catch (error) {
       navigate("/networkError");
     }

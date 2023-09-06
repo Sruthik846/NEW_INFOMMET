@@ -39,23 +39,28 @@ function App() {
     admin: [],
   };
 
-
   useEffect(() => {
-    axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
-  .then(response => {
-    const tokenData = response.data.auth;
-    const cookieData = CryptoJS.AES.decrypt(tokenData, 'secret-key').toString(CryptoJS.enc.Utf8);
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        const tokenData = response.data.auth;
+        const cookieData = CryptoJS.AES.decrypt(
+          tokenData,
+          "secret-key"
+        ).toString(CryptoJS.enc.Utf8);
 
-    const usertypeData = response.data.usertype;
-    const usertype = CryptoJS.AES.decrypt(usertypeData, 'secret-key').toString(CryptoJS.enc.Utf8);
-    setToken(cookieData);
-    setUsertype(usertype);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+        const usertypeData = response.data.usertype;
+        const usertype = CryptoJS.AES.decrypt(
+          usertypeData,
+          "secret-key"
+        ).toString(CryptoJS.enc.Utf8);
+        setToken(cookieData);
+        setUsertype(usertype);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, []);
-
 
   if (usertype && !restrictedLink) {
     const hasRestrictedLinks = usertype && restrictedLinks[usertype].length > 0;
@@ -71,25 +76,24 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-
-
-  
-
   useEffect(() => {
-    axios.get('http://localhost:5000/get-cookie-data', { withCredentials: true })
-  .then(response => {
-    const tokenData = response.data.auth;
-    const cookieData = CryptoJS.AES.decrypt(tokenData, 'secret-key').toString(CryptoJS.enc.Utf8);
-    setToken(cookieData);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        const tokenData = response.data.auth;
+        const cookieData = CryptoJS.AES.decrypt(
+          tokenData,
+          "secret-key"
+        ).toString(CryptoJS.enc.Utf8);
+        setToken(cookieData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }, []);
 
   return (
     <div className="App">
-      {/* <AuthContextProvider> */}
       <CookiesProvider>
         <CookieMonitorMiddleware>
           <Provider store={store}>
@@ -161,12 +165,7 @@ function App() {
                     ></Route>
 
                     {restrictedLink === false ? (
-                      <Route
-                        path="/hall"
-                        element={
-                          <Hall></Hall>
-                        }
-                      ></Route>
+                      <Route path="/hall" element={<Hall></Hall>}></Route>
                     ) : (
                       <Route
                         path="/hall"
@@ -268,12 +267,7 @@ function App() {
                         token ? <Home></Home> : <Navigate to="/"></Navigate>
                       }
                     />
-                    <Route
-                      path="/hall"
-                      element={
-                        <Hall></Hall>
-                      }
-                    ></Route>
+                    <Route path="/hall" element={<Hall></Hall>}></Route>
                     <Route
                       path="/addhall"
                       element={
@@ -356,10 +350,8 @@ function App() {
           </Provider>
         </CookieMonitorMiddleware>
       </CookiesProvider>
-      {/* </AuthContextProvider> */}
+
     </div>
-    
   );
 }
-
 export default App;

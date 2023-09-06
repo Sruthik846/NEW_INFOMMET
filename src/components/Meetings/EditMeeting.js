@@ -33,7 +33,6 @@ function EditMeeting() {
   const [showerrorMessage, setshowerrorMessage] = useState([]);
   const [TimeList, setTimeList] = useState([]);
 
-
   const handleClose = () => {
     setshowsuccessMessage("");
     navigate("/meeting");
@@ -47,9 +46,19 @@ function EditMeeting() {
   // ---------------------- GET TIME SLOTS ---------------------------------------
 
   useEffect(() => {
-    if (!ContexToken) {
-      window.location.href = "/";
-    }
+    axios
+      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
+      .then((response) => {
+        // Decrypt data from server to clent side
+        const tokenData = response.data.auth;
+        if (!tokenData) {
+          window.location.href = "/";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     try {
       const config = {
         headers: {
