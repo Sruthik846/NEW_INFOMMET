@@ -58,7 +58,7 @@ function App() {
         setUsertype(usertype);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        // console.error("Error:", error);
       });
   }, []);
 
@@ -88,7 +88,7 @@ function App() {
         setToken(cookieData);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        // console.error("Error:", error);
       });
   }, []);
 

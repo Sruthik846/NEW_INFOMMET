@@ -24,7 +24,6 @@ const AuthProvider = ({ children }) => {
             tokenData,
             "secret-key"
           ).toString(CryptoJS.enc.Utf8);
-          console.log("Cookie data : ", cookieData);
 
           const emailData = response.data.email;
           const email = CryptoJS.AES.decrypt(emailData, "secret-key").toString(
@@ -73,7 +72,7 @@ const AuthProvider = ({ children }) => {
           }
         })
         .catch((error) => {
-          console.error("Error:", error);
+          // console.error("Error:", error);
         });
     }, 1000); // Check every second (1000 milliseconds)
 
