@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import TopNav from "../Navbar/TopNav";
 import Meetings from "./Meetings";
+import Cookies from "js-cookie";
 import {
   useNavigate,
   useLocation,
@@ -14,10 +15,9 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import { AuthContext } from "../Context/Context";
 
 function EditMeeting() {
-  const { ContexToken } = useContext(AuthContext);
+  const ContexToken = Cookies.get("info_Authtoken");
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
@@ -46,19 +46,6 @@ function EditMeeting() {
   // ---------------------- GET TIME SLOTS ---------------------------------------
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-
     try {
       const config = {
         headers: {

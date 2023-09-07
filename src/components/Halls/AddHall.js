@@ -6,10 +6,9 @@ import { useNavigate, Routes, Route, Link } from "react-router-dom";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Hall from "./Hall";
-import { AuthContext } from "../Context/Context";
+import Cookies from "js-cookie";
 
 function AddHall() {
-  const { ContexToken } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
@@ -17,20 +16,7 @@ function AddHall() {
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+  const ContexToken = Cookies.get("info_Authtoken");
 
   // Success message close
   const handleClose = () => {
@@ -54,18 +40,6 @@ function AddHall() {
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  axios
-    .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-    .then((response) => {
-      // Decrypt data from server to clent side
-      const tokenData = response.data.auth;
-      if (!tokenData) {
-        window.location.href = "/";
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -74,15 +48,6 @@ function AddHall() {
       floor,
       building,
     };
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          navigate("/");
-        }
-      });
 
     try {
       axios

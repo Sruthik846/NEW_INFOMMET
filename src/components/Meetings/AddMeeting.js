@@ -7,13 +7,14 @@ import { faPencil, faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, Link, Routes, Route } from "react-router-dom";
 import TopNav from "../Navbar/TopNav";
 import Meetings from "./Meetings";
-import { AuthContext } from "../Context/Context";
+import Cookies from "js-cookie";
 
 function AddMeeting() {
-  const { ContexToken } = useContext(AuthContext);
-  const { nameCookie } = useContext(AuthContext);
-  const { ifidCookie } = useContext(AuthContext);
-  const { deptCookie } = useContext(AuthContext);
+  const ContexToken = Cookies.get("info_Authtoken");
+  const nameCookie = Cookies.get("name");
+  const ifidCookie = Cookies.get("ifid");
+  const deptCookie = Cookies.get("department");
+
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
@@ -34,18 +35,6 @@ function AddMeeting() {
 
   // ---------------------- GET TIME SLOTS ---------------------------------------
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
 
     try {
       const config = {

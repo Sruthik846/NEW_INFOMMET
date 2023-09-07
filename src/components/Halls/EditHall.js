@@ -5,6 +5,7 @@ import axios from "axios";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Hall from "./Hall";
+import Cookies from "js-cookie";
 import {
   useLocation,
   useNavigate,
@@ -12,10 +13,8 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-import { AuthContext } from "../Context/Context";
 
 function EditHall() {
-  const { ContexToken } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const data = location.state;
@@ -27,19 +26,9 @@ function EditHall() {
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+
+  const ContexToken = Cookies.get("info_Authtoken");
+
 
   // Success message close
   const handleClose = () => {
@@ -59,18 +48,6 @@ function EditHall() {
   };
 
   const handleSubmit = (event) => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
 
     event.preventDefault();
     try {

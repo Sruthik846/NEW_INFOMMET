@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Users from "./Users";
+import Cookies from "js-cookie";
 import {
   faPencil,
   faEnvelope,
@@ -16,10 +17,9 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { AuthContext } from "../Context/Context";
 
 function EditUser() {
-  const { ContexToken } = useContext(AuthContext);
+  const ContexToken = Cookies.get("info_Authtoken");
   const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const data = location.state;

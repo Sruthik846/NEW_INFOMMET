@@ -6,26 +6,10 @@ import Users from "../Users/Users";
 import Meetings from "../Meetings/Meetings";
 import Hall from "../Halls/Hall";
 import BottomNavigation from "../Navbar/BottomNavigation";
-import { AuthContext } from "../Context/Context";
-import { useContext } from "react";
-import axios from "axios";
+import Cookies from "js-cookie";
 
 function Home() {
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
-
-  const { userTypeCooklie } = useContext(AuthContext);
+  const userTypeCooklie = Cookies.get("user_type");
 
   const restrictedLinks = {
     user: ["/users", "/hall"],

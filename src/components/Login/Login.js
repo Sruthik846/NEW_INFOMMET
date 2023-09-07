@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import Cookies from "js-cookie";
 import Home from "../Home/Home";
-import CryptoJS from "crypto-js";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +28,6 @@ function Login() {
       password,
     };
     console.log(newUser);
-
     try {
       const config = {
         headers: {
@@ -38,63 +37,19 @@ function Login() {
       };
       const body = JSON.stringify(newUser);
       await axios
-        .post("https://meetingapi.infolksgroup.com/api/login", body, config, {
-          withCredentials: true,
-        })
+        .post("https://meetingapi.infolksgroup.com/api/login", body, config)
         .then((response) => {
-          const ContexToken = response.data["token"];
+          const token = response.data["token"];
+          // localStorage.setItem("info_Authtoken", token);
+          Cookies.set("info_Authtoken", token);
 
-          // decryption
-          const token = CryptoJS.AES.encrypt(
-            ContexToken,
-            "secret-key"
-          ).toString();
-
-          const emailData = newUser["email"];
-          const emailCookie = CryptoJS.AES.encrypt(
-            emailData,
-            "secret-key"
-          ).toString();
-
-          const passworData = newUser["password"];
-          const passwordCookie = CryptoJS.AES.encrypt(
-            passworData,
-            "secret-key"
-          ).toString();
-
-          const nameData = response.data["user"]["name"];
-          const nameCookie = CryptoJS.AES.encrypt(
-            nameData,
-            "secret-key"
-          ).toString();
-
-          const ifidData = response.data["user"]["if_id"];
-          const ifidCookie = CryptoJS.AES.encrypt(
-            ifidData,
-            "secret-key"
-          ).toString();
-
-          const deptData = response.data["user"]["department"];
-          const deptCookie = CryptoJS.AES.encrypt(
-            deptData,
-            "secret-key"
-          ).toString();
-
-          const userTypeData = response.data["user"]["user_type"];
-          const userTypeCookie = CryptoJS.AES.encrypt(
-            userTypeData,
-            "secret-key"
-          ).toString();
-
-          updateValue(
-            token,
-            emailCookie,
-            passwordCookie,
-            ifidCookie,
-            deptCookie,
-            userTypeCookie,
-            nameCookie
-          );
+          Cookies.set("email", newUser["email"]);
+          Cookies.set("password", newUser["password"]);
+          Cookies.set("name", response.data["user"]["name"]);
+          Cookies.set("ifid", response.data["user"]["if_id"]);
+          Cookies.set("department", response.data["user"]["department"]);
+          Cookies.set("user_type", response.data["user"]["user_type"]);
+          window.location.href = "/home";
         });
     } catch (err) {
       setshowerrorMessage(err.response["data"]["message"]);
@@ -102,47 +57,14 @@ function Login() {
     }
   };
 
-  const updateValue = async (
-    tokens,
-    emailCookie,
-    passwordCookie,
-    ifidCookie,
-    deptCookie,
-    userTypeCookie,
-    nameCookie
-  ) => {
-    await axios.post(
-      "http://localhost:5000/api/loginn",
-      {
-        tokens,
-        emailCookie,
-        passwordCookie,
-        ifidCookie,
-        deptCookie,
-        userTypeCookie,
-        nameCookie,
-      },
-      { withCredentials: true }
-    );
-    console.log(emailCookie, ifidCookie);
-    window.location.href = "/home";
-  };
-
   useEffect(() => {
     const handleAuthChange = () => {
-      axios
-        .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-        .then((response) => {
-          const cookieData = response.data.auth;
-          if (cookieData) {
-            setAuthenticated(true);
-          } else {
-            setAuthenticated(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      const authToken = Cookies.get("info_Authtoken");
+      if (authToken) {
+        setAuthenticated(true);
+      } else {
+        setAuthenticated(false);
+      }
     };
 
     window.addEventListener("storage", handleAuthChange);

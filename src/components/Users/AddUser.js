@@ -1,19 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, Route, Routes, Link } from "react-router-dom";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Users from "./Users";
+import Cookies from "js-cookie";
 import {
   faPencil,
   faEnvelope,
   faCircleArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { AuthContext } from "../Context/Context";
 
 function AddUser() {
-  const { ContexToken } = useContext(AuthContext);
+  const ContexToken = Cookies.get("info_Authtoken");
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";

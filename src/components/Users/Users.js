@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import { FaUserPlus } from "react-icons/fa";
 import axios from "axios";
@@ -7,10 +7,10 @@ import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { AuthContext } from "../Context/Context";
+import Cookies from "js-cookie";
 
 function Users() {
-  const { ContexToken } = useContext(AuthContext);
+  const ContexToken = Cookies.get("info_Authtoken");
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
@@ -39,18 +39,6 @@ function Users() {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
 
     try {
       const config = {
@@ -81,18 +69,6 @@ function Users() {
   };
 
   const openDeleteModal = (itemId) => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
 
     // console.log("Deleted itemId : ", itemId);
     setSelectedItemId(itemId);
@@ -145,18 +121,6 @@ function Users() {
   };
 
   const handleSave = (event) => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
 
     event.preventDefault();
     const updatedItem = { ...selectedEditItemId };
@@ -198,19 +162,6 @@ function Users() {
     });
   };
   const onSubmit = async (e) => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        // Decrypt data from server to clent side
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-
     e.preventDefault();
 
     // console.log(formData);

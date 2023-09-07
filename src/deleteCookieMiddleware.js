@@ -1,4 +1,4 @@
-import Cookies from "js-cookie";
+
 
 const deleteCookieMiddleware = (store) => (next) => (action) => {
   if (action.type === "DELETE_COOKIE") {

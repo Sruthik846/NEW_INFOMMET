@@ -6,20 +6,6 @@ import Cookies from "js-cookie";
 import { useContext } from "react";
 
 function Logout() {
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/get-cookie-data", { withCredentials: true })
-      .then((response) => {
-        const tokenData = response.data.auth;
-        if (!tokenData) {
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
-
   const { ContexToken } = useContext(AuthContext);
 
   // const { updateToken } = useContext(AuthContext);

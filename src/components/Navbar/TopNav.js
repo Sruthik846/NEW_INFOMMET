@@ -9,11 +9,10 @@ import Home from "../Home/Home";
 import Hall from "../Halls/Hall";
 import Users from "../Users/Users";
 import Meetings from "../Meetings/Meetings";
-import { AuthContext } from "../Context/Context";
-import { useContext } from "react";
+import Cookies from "js-cookie";
 
 function TopNav({ data, path }) {
-  const { userTypeCooklie } = useContext(AuthContext);
+  const userTypeCooklie = Cookies.get("user_type");
   const restrictedLinks = {
     user: ["/users", "/hall"], // Restricted links for the "user" user type
     admin: [], // Empty array for unrestricted links of "admin" user type
