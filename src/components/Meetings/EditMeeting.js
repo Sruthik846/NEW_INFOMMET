@@ -1,4 +1,3 @@
-import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import { useState } from "react";

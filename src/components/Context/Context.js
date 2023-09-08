@@ -11,6 +11,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const savedToken = Cookies.get("info_Authtoken");
+    console.log(savedToken);
 
     if (savedToken) {
       setToken(savedToken);
@@ -68,7 +69,6 @@ const AuthProvider = ({ children }) => {
     setToken(newToken);
     Cookies.set("info_Authtoken", newToken);
   };
-  console.log("Token", token);
 
   return (
     <AuthContext.Provider value={{ token, updateToken }}>

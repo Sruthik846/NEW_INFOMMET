@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Route, Routes, Link } from "react-router-dom";
 import { FaUsers, FaMeetup, FaHotel } from "react-icons/fa";
 import Navbar from "../Navbar/Navbar";

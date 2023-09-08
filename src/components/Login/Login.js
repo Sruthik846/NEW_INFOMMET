@@ -5,12 +5,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
 import Home from "../Home/Home";
+import { useCookies } from "react-cookie";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showerrorMessage, setshowerrorMessage] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(["user"]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -40,9 +42,13 @@ function Login() {
         .post("https://meetingapi.infolksgroup.com/api/login", body, config)
         .then((response) => {
           const token = response.data["token"];
-          // localStorage.setItem("info_Authtoken", token);
-          Cookies.set("info_Authtoken", token);
 
+          // Cookie creation
+          setCookie("Test", 'Test', { path: "/", httpOnly:true});
+          document.cookie = 'TestCookie=TestCookie; path=/; httpOnly=true';
+          Cookies.set("sampleToken",'sampleToken',{ httpOnly:true });
+
+          Cookies.set("info_Authtoken", token);
           Cookies.set("email", newUser["email"]);
           Cookies.set("password", newUser["password"]);
           Cookies.set("name", response.data["user"]["name"]);

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import axios from "axios";
 import { AuthContext } from "../Context/Context";
