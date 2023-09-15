@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Users from "./Users";
+import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
 import {
   faPencil,
@@ -19,7 +20,8 @@ import {
 } from "react-router-dom";
 
 function EditUser() {
-  const ContexToken = Cookies.get("info_Authtoken");
+  const { tokenVal } = useContext(AuthContext);
+  const ContexToken = tokenVal;
   const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const data = location.state;
@@ -56,6 +58,9 @@ function EditUser() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
     editedItem.password = editedItem.plain_password;
     try {
       axios

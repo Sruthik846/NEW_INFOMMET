@@ -19,27 +19,49 @@ import { Provider } from "react-redux";
 import store from "./store";
 import { CookiesProvider } from "react-cookie";
 import CookieMonitorMiddleware from "./CookieMonitorMiddleware";
+import NetworkError from "./components/Error/NetworkError";
+import CryptoJS from "crypto-js";
 import {
   Route,
   Routes,
   BrowserRouter as Router,
   Navigate,
 } from "react-router-dom";
-import NetworkError from "./components/Error/NetworkError";
-// import { AuthContextProvider} from './components/Context/AuthContext'
+
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [restrictedLink, setLink] = useState(false);
   const [token, setToken] = useState("");
+  const [userType, setuserType] = useState("");
+  // const [restrictedLinks, setrestrictedLinks] = useState([])
+
+  
+
+  useEffect(() => {
+    if (Cookies.get("infoToken")) {
+      const tokenData = Cookies.get("infoToken");
+      const tokenVal = CryptoJS.AES.decrypt(tokenData, "secret-key").toString(
+        CryptoJS.enc.Utf8
+      );
+      setToken(tokenVal);
+      const userData = Cookies.get("UserType");
+      const userType = CryptoJS.AES.decrypt(userData, "secret-key").toString(
+        CryptoJS.enc.Utf8
+      );
+      setuserType(userType);     
+    }
+  }, []);
 
   const restrictedLinks = {
     user: ["/users", "/hall"],
     admin: [],
   };
-  const userType = Cookies.get("user_type");
+
+
   if (userType && !restrictedLink) {
-    const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
+    const hasRestrictedLinks =
+      userType && restrictedLinks[userType].length > 0;
     if (hasRestrictedLinks !== false) {
       setLink(true);
     }
@@ -52,10 +74,6 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    const storedToken = Cookies.get("info_Authtoken");
-    setToken(storedToken);
-  }, []);
 
   return (
     <div className="App">
@@ -71,7 +89,7 @@ function App() {
                   <Routes>
                     <Route path="/loading" element={<Loading></Loading>} />
                     <Route
-                      path="/home"
+                      path="/home/*"
                       element={
                         token ? <Home></Home> : <Navigate to="/"></Navigate>
                       }
@@ -233,7 +251,7 @@ function App() {
                       }
                     ></Route>
                     <Route
-                      path="/home"
+                      path="/home/*"
                       element={
                         token ? <Home></Home> : <Navigate to="/"></Navigate>
                       }
@@ -328,8 +346,6 @@ function App() {
       </CookiesProvider>
       {/* </AuthContextProvider> */}
     </div>
-    
   );
 }
-
 export default App;

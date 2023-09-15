@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
 import Home from "../Home/Home";
+import CryptoJS from "crypto-js";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +28,7 @@ function Login() {
       email,
       password,
     };
-    console.log(newUser);
+
     try {
       const config = {
         headers: {
@@ -40,16 +41,53 @@ function Login() {
         .post("https://meetingapi.infolksgroup.com/api/login", body, config)
         .then((response) => {
           const token = response.data["token"];
-          // localStorage.setItem("info_Authtoken", token);
-          Cookies.set("info_Authtoken", token);
 
-          Cookies.set("email", newUser["email"]);
-          Cookies.set("password", newUser["password"]);
-          Cookies.set("name", response.data["user"]["name"]);
-          Cookies.set("ifid", response.data["user"]["if_id"]);
-          Cookies.set("department", response.data["user"]["department"]);
-          Cookies.set("user_type", response.data["user"]["user_type"]);
-          window.location.href = "/home";
+          // Cookie creation
+          const expirationTime = new Date();
+          expirationTime.setHours(expirationTime.getHours() + 1);
+
+          const tokanVal = CryptoJS.AES.encrypt(token, "secret-key").toString(); // encrypt data to store cookie
+          Cookies.set("infoToken", tokanVal, {
+            expires: expirationTime,
+          });
+
+          const emailVal = CryptoJS.AES.encrypt(
+            newUser["email"],
+            "secret-key"
+          ).toString();
+          Cookies.set("Email", emailVal);
+
+          const passwordVal = CryptoJS.AES.encrypt(
+            newUser["password"],
+            "secret-key"
+          ).toString();
+          Cookies.set("Password", passwordVal);
+
+          const nameVal = CryptoJS.AES.encrypt(
+            response.data["user"]["name"],
+            "secret-key"
+          ).toString();
+          Cookies.set("Name", nameVal);
+
+          const ifidVal = CryptoJS.AES.encrypt(
+            response.data["user"]["if_id"],
+            "secret-key"
+          ).toString();
+          Cookies.set("Ifid", ifidVal);
+
+          const deptVal = CryptoJS.AES.encrypt(
+            response.data["user"]["department"],
+            "secret-key"
+          ).toString();
+          Cookies.set("Department", deptVal);
+
+          const userVal = CryptoJS.AES.encrypt(
+            response.data["user"]["user_type"],
+            "secret-key"
+          ).toString();
+          Cookies.set("UserType", userVal);
+
+          window.location.href = "/home/*";
         });
     } catch (err) {
       setshowerrorMessage(err.response["data"]["message"]);
@@ -59,7 +97,7 @@ function Login() {
 
   useEffect(() => {
     const handleAuthChange = () => {
-      const authToken = Cookies.get("info_Authtoken");
+      const authToken = Cookies.get("infoToken");
       if (authToken) {
         setAuthenticated(true);
       } else {

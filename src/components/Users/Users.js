@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import { FaUserPlus } from "react-icons/fa";
 import axios from "axios";
@@ -7,10 +7,12 @@ import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
 
 function Users() {
-  const ContexToken = Cookies.get("info_Authtoken");
+  const { tokenVal } = useContext(AuthContext);
+  const ContexToken = tokenVal;
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
@@ -39,6 +41,9 @@ function Users() {
   };
 
   useEffect(() => {
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
 
     try {
       const config = {
@@ -53,7 +58,7 @@ function Users() {
           setDataList(response.data);
         })
         .catch((error) => {
-          console.error("Error : ", error.response["data"]);
+          // console.error("Error : ", error.response["data"]);
           setshowerrorMessage(error.response["data"]);
         });
     } catch (error) {
@@ -69,13 +74,15 @@ function Users() {
   };
 
   const openDeleteModal = (itemId) => {
-
     // console.log("Deleted itemId : ", itemId);
     setSelectedItemId(itemId);
     setshowDeletemodal(true);
   };
   const handleDelete = async () => {
     // console.log(selectedItemId);
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
     try {
       const config = {
         headers: {
@@ -86,7 +93,6 @@ function Users() {
       axios
         .delete(`${apiUrl}/api/user/${selectedItemId}`, config)
         .then((response) => {
-          // console.log(response.data);
           deleteDictById(selectedItemId);
         })
         .catch((error) => {
@@ -121,8 +127,11 @@ function Users() {
   };
 
   const handleSave = (event) => {
-
     event.preventDefault();
+
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
     const updatedItem = { ...selectedEditItemId };
 
     updatedItem.password = updatedItem.plain_password;
@@ -135,7 +144,7 @@ function Users() {
           setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          console.error("Error : ", error.response["data"]);
+          // console.error("Error : ", error.response["data"]);
           setshowerrorMessage(error.response["data"]);
         });
     } catch (error) {
@@ -163,8 +172,10 @@ function Users() {
   };
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
 
-    // console.log(formData);
     try {
       await axios
         .post(`${apiUrl}/api/user`, formData, {
@@ -179,7 +190,7 @@ function Users() {
           setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          console.error("Error : ", error.response["data"]);
+          // console.error("Error : ", error.response["data"]);
           setshowerrorMessage(error.response["data"]);
         });
     } catch (error) {
@@ -206,7 +217,7 @@ function Users() {
     setshowerrorMessage([]);
   };
   const title = "Users";
-  const path = "/home";
+  const path = "/home/*";
 
   return (
     <div className="bg-white lg:bg-gray-800 md:bg-gray-800 h-screen font-sans overflow-y-auto">

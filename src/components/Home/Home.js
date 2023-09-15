@@ -1,15 +1,23 @@
-import React, { useEffect } from "react";
-import { Route, Routes, Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import { FaUsers, FaMeetup, FaHotel } from "react-icons/fa";
 import Navbar from "../Navbar/Navbar";
 import Users from "../Users/Users";
 import Meetings from "../Meetings/Meetings";
 import Hall from "../Halls/Hall";
 import BottomNavigation from "../Navbar/BottomNavigation";
+import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
 
 function Home() {
-  const userTypeCooklie = Cookies.get("user_type");
+  const { userVal } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  if (!Cookies.get("infoToken")) {
+    navigate("/");
+  }
+
+  const userTypeCooklie = userVal;
 
   const restrictedLinks = {
     user: ["/users", "/hall"],

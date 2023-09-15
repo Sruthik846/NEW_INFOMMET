@@ -7,13 +7,21 @@ import { faPencil, faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, Link, Routes, Route } from "react-router-dom";
 import TopNav from "../Navbar/TopNav";
 import Meetings from "./Meetings";
+import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
 
 function AddMeeting() {
-  const ContexToken = Cookies.get("info_Authtoken");
-  const nameCookie = Cookies.get("name");
-  const ifidCookie = Cookies.get("ifid");
-  const deptCookie = Cookies.get("department");
+  const { tokenVal } = useContext(AuthContext);
+  const ContexToken = tokenVal;
+
+  const { nameVal } = useContext(AuthContext);
+  const nameCookie = nameVal;
+
+  const { ifidVal } = useContext(AuthContext);
+  const ifidCookie = ifidVal;
+
+  const { deptVal } = useContext(AuthContext);
+  const deptCookie = deptVal;
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -35,8 +43,10 @@ function AddMeeting() {
 
   // ---------------------- GET TIME SLOTS ---------------------------------------
   useEffect(() => {
-
     try {
+      if (!Cookies.get("infoToken")) {
+        navigate("/");
+      }
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -54,6 +64,9 @@ function AddMeeting() {
   // --------------------------- GET MEETING LIST --------------------------------
   useEffect(() => {
     try {
+      if (!Cookies.get("infoToken")) {
+        navigate("/");
+      }
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -115,12 +128,15 @@ function AddMeeting() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
     const newUser = {
       agenda,
       hall,
       date,
     };
-    // console.log(newUser);
+
     const slot = Object.values(selectedButtons).map((item) => item.slot);
     const time = Object.values(selectedButtons).map((item) => item.time);
     newUser.slot = slot;
@@ -128,7 +144,6 @@ function AddMeeting() {
     newUser.if_id = ifidCookie;
     newUser.booked_by = nameCookie;
     newUser.department = deptCookie;
-    // console.log(newUser);
 
     try {
       axios
@@ -139,10 +154,9 @@ function AddMeeting() {
         })
         .then((response) => {
           setshowsuccessMessage("Meeting Created");
-          // window.location.reload()
         })
         .catch((error) => {
-          console.error("Error : ", error);
+          // console.error("Error : ", error);
           setshowerrorMessage(error["message"]);
         });
     } catch (error) {
@@ -156,6 +170,7 @@ function AddMeeting() {
     });
     setSelectedButtons("");
   };
+  
   // Error message close
   const handleErrorClose = () => {
     setshowerrorMessage([]);
@@ -258,6 +273,7 @@ function AddMeeting() {
           </div>
         </div>
         <form
+          name="addMeetingForm"
           className=" p-6 lg:py-0 md:py-0 py-20"
           onSubmit={(e) => onSubmit(e)}
         >

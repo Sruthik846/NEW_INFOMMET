@@ -9,15 +9,16 @@ import { useContext } from "react";
 
 function BottomNavigation() {
   const { nameCookie } = useContext(AuthContext);
+  
   return (
     <div className="md:hidden font-sans">
       {nameCookie === "Admin" ? (
         <div className="bottom-navigation bg-white flex fixed justify-between shadow-lg text-center py-1">
-          <Link to="/home" className="text-gray-700 px-6">
+          <Link to="/home/*" className="text-gray-700 px-6">
             <div className="relative">
               <FaHome className="w-6 h-10 mb-2 dark:text-white-400"></FaHome>
               <Routes>
-                <Route path="/home" element={<Home></Home>} />
+                <Route path="/home/*" element={<Home></Home>} />
               </Routes>
             </div>
           </Link>
@@ -49,11 +50,11 @@ function BottomNavigation() {
         </div>
       ) : (
         <div className="bottom-navigation  bg-white flex fixed justify-between shadow-lg py-1">
-          <Link to="/home" className="text-gray-700 px-6">
+          <Link to="/home/*" className="text-gray-700 px-6">
             <div className="relative">
               <FaHome className="w-6 h-10 mb-2 dark:text-white-400"></FaHome>
               <Routes>
-                <Route path="/home" element={<Home></Home>} />
+                <Route path="/home/*" element={<Home></Home>} />
               </Routes>
             </div>
           </Link>

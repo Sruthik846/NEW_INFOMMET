@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -6,6 +6,7 @@ import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Hall from "./Hall";
 import Cookies from "js-cookie";
+import { AuthContext } from "../Context/Context";
 import {
   useLocation,
   useNavigate,
@@ -15,6 +16,8 @@ import {
 } from "react-router-dom";
 
 function EditHall() {
+  const { tokenVal } = useContext(AuthContext);
+
   const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const data = location.state;
@@ -26,9 +29,7 @@ function EditHall() {
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
-
-  const ContexToken = Cookies.get("info_Authtoken");
-
+  const ContexToken = tokenVal;
 
   // Success message close
   const handleClose = () => {
@@ -48,8 +49,12 @@ function EditHall() {
   };
 
   const handleSubmit = (event) => {
-
     event.preventDefault();
+
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
+
     try {
       axios
         .put(`${apiUrl}/api/hall/${editedItem["id"]}`, editedItem, {
@@ -61,7 +66,7 @@ function EditHall() {
           setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          console.error("Error : ", error);
+          // console.error("Error : ", error);
           setshowerrorMessage(error.response["data"]["errors"]);
         });
     } catch (error) {
@@ -167,7 +172,7 @@ function EditHall() {
 
           <div className=" font-bold px-2">EDIT HALL</div>
         </div>
-        <form className="space-y-6 p-6 py-20" onSubmit={handleSubmit}>
+        <form className="space-y-6 p-6 py-20" name="editHallForm" onSubmit={handleSubmit}>
           <center>
             <div className="flex items-center w-full md:w-1/4 bg-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
               <input

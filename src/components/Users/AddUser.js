@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate, Route, Routes, Link } from "react-router-dom";
@@ -6,6 +6,7 @@ import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Users from "./Users";
 import Cookies from "js-cookie";
+import { AuthContext } from "../Context/Context";
 import {
   faPencil,
   faEnvelope,
@@ -13,7 +14,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function AddUser() {
-  const ContexToken = Cookies.get("info_Authtoken");
+  const { tokenVal } = useContext(AuthContext);
+  const ContexToken = tokenVal;
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
@@ -55,6 +57,11 @@ function AddUser() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
+
     const newUser = {
       name,
       if_id,

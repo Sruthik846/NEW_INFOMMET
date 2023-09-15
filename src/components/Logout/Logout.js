@@ -1,15 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useContext } from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import axios from "axios";
-import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
-import { useContext } from "react";
+import { AuthContext } from "../Context/Context";
+import { useNavigate } from "react-router-dom";
 
 function Logout() {
-  const { ContexToken } = useContext(AuthContext);
+  const { tokenVal } = useContext(AuthContext);
+  const ContexToken = tokenVal;
+  const navigate = useNavigate();
 
   // const { updateToken } = useContext(AuthContext);
   const handleLogout = async () => {
+    if(!Cookies.get("infoToken")){
+      navigate("/");
+    }
     await axios
       .post("http://meetingapi.infolksgroup.com/api/logout", null, {
         headers: {
@@ -17,21 +22,14 @@ function Logout() {
         },
       })
       .then((response) => {
-        Cookies.remove("email");
-        Cookies.remove("name");
-        Cookies.remove("ifid");
-        Cookies.remove("department");
-        Cookies.remove("user_type");
-        Cookies.remove("password");
-        axios
-          .get("http://localhost:5000/clear-cookie", { withCredentials: true })
-          .then((response) => {
-            // console.log("Cookie deleted successfully");
-          })
-          .catch((error) => {
-            console.error("Error deleting cookie:", error);
-          });
-        Cookies.remove("info_Authtoken");
+        Cookies.remove("Email");
+        Cookies.remove("Name");
+        Cookies.remove("Ifid");
+        Cookies.remove("Department");
+        Cookies.remove("UserType");
+        Cookies.remove("Password");
+
+        Cookies.remove("infoToken");
         window.location.reload();
       })
       .catch((error) => console.error(error));

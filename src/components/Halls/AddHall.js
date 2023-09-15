@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -6,9 +6,11 @@ import { useNavigate, Routes, Route, Link } from "react-router-dom";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import TopNav from "../Navbar/TopNav";
 import Hall from "./Hall";
+import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
 
 function AddHall() {
+  const { tokenVal } = useContext(AuthContext);
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
@@ -16,7 +18,7 @@ function AddHall() {
   const [showsuccessMessage, setshowsuccessMessage] = React.useState("");
   const [showerrorMessage, setshowerrorMessage] = React.useState([]);
 
-  const ContexToken = Cookies.get("info_Authtoken");
+  const ContexToken = tokenVal;
 
   // Success message close
   const handleClose = () => {
@@ -43,6 +45,11 @@ function AddHall() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
+
     const newUser = {
       hall,
       floor,
@@ -163,7 +170,7 @@ function AddHall() {
           <div className=" font-bold px-2">ADD HALL</div>
         </div>
 
-        <form className="space-y-6 p-6 py-20" onSubmit={(e) => onSubmit(e)}>
+        <form className="space-y-6 p-6 py-20" name="addHallForm" onSubmit={(e) => onSubmit(e)}>
           <center>
             <div className="flex w-full md:w-1/4 items-center bg-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
               <input

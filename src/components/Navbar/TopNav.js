@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -9,10 +9,11 @@ import Home from "../Home/Home";
 import Hall from "../Halls/Hall";
 import Users from "../Users/Users";
 import Meetings from "../Meetings/Meetings";
-import Cookies from "js-cookie";
+import { AuthContext } from "../Context/Context";
 
 function TopNav({ data, path }) {
-  const userTypeCooklie = Cookies.get("user_type");
+  const { userVal } = useContext(AuthContext);
+  const userTypeCooklie = userVal;
   const restrictedLinks = {
     user: ["/users", "/hall"], // Restricted links for the "user" user type
     admin: [], // Empty array for unrestricted links of "admin" user type
@@ -27,12 +28,12 @@ function TopNav({ data, path }) {
         <div className="flex justify-between">
           <div className="flex space-x-7">
             <div className="md:hidden py-3">
-              {path === "/home" ? (
-                <Link to="/home" className="flex gap-3 font-medium">
+              {path === "/home/*" ? (
+                <Link to="/home/*" className="flex gap-3 font-medium">
                   <FaArrowLeft></FaArrowLeft>
                   {data}
                   <Routes>
-                    <Route path="/home" element={<Home></Home>} />
+                    <Route path="/home/*" element={<Home></Home>} />
                   </Routes>
                 </Link>
               ) : path === "/hall" ? (
@@ -73,13 +74,13 @@ function TopNav({ data, path }) {
               </div>
 
               <Link
-                to="/home"
+                to="/home/*"
                 className="py-4 px-6 text-sm text-gray-300 font-semibold hover:text-blue-500 transition duration-300"
               >
                 <div className="relative">
                   Home
                   <Routes>
-                    <Route path="/home" element={<Home></Home>} />
+                    <Route path="/home/*" element={<Home></Home>} />
                   </Routes>
                 </div>
               </Link>

@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BottomNavigation from "../Navbar/BottomNavigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { faPencil, faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useEffect } from "react";
 import TopNav from "../Navbar/TopNav";
 import Meetings from "./Meetings";
 import Cookies from "js-cookie";
+import { AuthContext } from "../Context/Context";
 import {
   useNavigate,
   useLocation,
@@ -17,7 +17,8 @@ import {
 } from "react-router-dom";
 
 function EditMeeting() {
-  const ContexToken = Cookies.get("info_Authtoken");
+  const { tokenVal } = useContext(AuthContext);
+  const ContexToken = tokenVal;
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
@@ -47,6 +48,9 @@ function EditMeeting() {
 
   useEffect(() => {
     try {
+      if (!Cookies.get("infoToken")) {
+        navigate("/");
+      }
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +64,7 @@ function EditMeeting() {
           setTimeArray(editedItem.time);
         })
         .catch((error) => {
-          console.error(error);
+          // console.error(error);
         });
     } catch (error) {
       navigate("/networkError");
@@ -73,6 +77,9 @@ function EditMeeting() {
 
   try {
     useEffect(() => {
+      if (!Cookies.get("infoToken")) {
+        navigate("/");
+      }
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -90,9 +97,9 @@ function EditMeeting() {
           setMeetingList(updatedList);
         })
         .catch((error) => {
-          console.error(error);
+          // console.error(error);
         });
-    }, [ContexToken, apiUrl]);
+    }, [ContexToken, apiUrl, navigate]);
   } catch (error) {
     navigate("/networkError");
   }
@@ -124,10 +131,8 @@ function EditMeeting() {
       setTimeArray(timeArray.filter((button) => button !== value));
     } else {
       setTimeArray([...timeArray, value]);
-      // li = timeArray;
     }
   };
-  // console.log(li)
 
   const handleSave = (event) => {
     event.preventDefault();
@@ -234,7 +239,7 @@ function EditMeeting() {
           </div>
         </div>
 
-        <form className="space-y-6 p-6 lg:py-0 md:py-0" onSubmit={handleSave}>
+        <form className="space-y-6 p-6 lg:py-0 md:py-0" onSubmit={handleSave} name="meetingForm">
           <div className="flex items-center bg-gray-200 lg:bg-gray-800 border lg:border-gray-600 lg:text-gray-300 md:bg-gray-800 md:border-gray-600 md:text-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
             <select
               id="halls"

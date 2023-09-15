@@ -14,11 +14,11 @@ function NetworkError() {
         </div>
       </center>
       <center className="mt-6">
-        <Link to="/home">
+        <Link to="/home/*">
           <button className="text-gray-500 font-mono text-xl bg-gray-200 p-3 rounded-md hover:shadow-md hover:bg-gray-600 hover:text-gray-300">
             Go back
             <Routes>
-              <Route path="/home" element={<Home></Home>} />
+              <Route path="/home/*" element={<Home></Home>} />
             </Routes>
           </button>
         </Link>

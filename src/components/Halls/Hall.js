@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AddHall from "./AddHall";
@@ -8,9 +8,12 @@ import TopNav from "../Navbar/TopNav";
 import { FaPlusCircle } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
 
 function Hall() {
+  const { tokenVal } = useContext(AuthContext);
+
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
@@ -25,11 +28,14 @@ function Hall() {
   const [showAddHall, setshowAddHall] = React.useState(false);
   const [selectedEditItemId, setSelectedEditItemId] = useState(null);
   const [showEditHall, setshowEditHall] = React.useState(false);
-
-  const ContexToken = Cookies.get("info_Authtoken");
+  const ContexToken = tokenVal;
 
   // GET DATA
   useEffect(() => {
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
+
     try {
       axios
         .get(`${apiUrl}/api/hall`, {
@@ -41,7 +47,7 @@ function Hall() {
           setHallList(response.data);
         })
         .catch((error) => {
-          console.error("Error ", error);
+          // console.error("Error ", error);
           navigate("/networkError");
         });
     } catch (error) {
@@ -62,6 +68,10 @@ function Hall() {
   };
 
   const handleDelete = async () => {
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
+
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -98,6 +108,11 @@ function Hall() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
+
     const newUser = {
       hall,
       floor,
@@ -116,7 +131,7 @@ function Hall() {
           setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          console.error("Error : ", error.response["data"]);
+          // console.error("Error : ", error.response["data"]);
           setshowerrorMessage(error.response["data"]);
         });
       setshowAddHall(false);
@@ -143,6 +158,10 @@ function Hall() {
   };
 
   const handleSave = (event) => {
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
+
     const updatedItem = { ...selectedEditItemId };
     try {
       axios
@@ -156,7 +175,7 @@ function Hall() {
           setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
-          console.error("Error : ", error);
+          // console.error("Error : ", error);
           setshowerrorMessage(error.response["data"]["errors"]);
         });
 
@@ -177,7 +196,7 @@ function Hall() {
   };
 
   const title = "Hall";
-  const path = "/home";
+  const path = "/home/*";
 
   return (
     <div className=" bg-white lg:bg-gray-800 md:bg-gray-800 h-screen font-sans">
@@ -315,7 +334,6 @@ function Hall() {
                     onClick={() => openDeleteModal(item.id)}
                     className="flex gap-1 items-center text-sm lg:text-gray-300 bg-blue-800 hover:text-white hover:bg-blue-600 text-white px-3 py-1 rounded shadow justify-center"
                   >
-                    {/* <FaTrash></FaTrash> */}
                     Delete
                   </button>
                 </div>
@@ -372,7 +390,7 @@ function Hall() {
               </button>
               <div className="px-6 py-6 lg:px-8">
                 <h3 className=" text-gray-300 font-bold pb-4">ADD HALL</h3>
-                <form className="space-y-6" onSubmit={(e) => onSubmit(e)}>
+                <form className="space-y-6" name="hallForm" onSubmit={(e) => onSubmit(e)}>
                   <div className="flex bg-gray-700 rounded-lg border border-gray-600">
                     <input
                       type="text"
@@ -465,7 +483,7 @@ function Hall() {
               </button>
               <div className="px-6 py-6 lg:px-8">
                 <h3 className=" text-gray-300 pb-4 font-bold">EDIT HALL</h3>
-                <form className="space-y-6" action="#">
+                <form className="space-y-6" name="updateHallForm" action="#">
                   <div className="flex bg-gray-700 rounded-lg border border-gray-600">
                     <input
                       type="text"

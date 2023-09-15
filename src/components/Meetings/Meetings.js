@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Route, Routes, Link, Navigate } from "react-router-dom";
+import { Route, Routes, Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BottomNavigation from "../Navbar/BottomNavigation";
 import AddMeeting from "./AddMeeting";
 import TopNav from "../Navbar/TopNav";
 import { FaPlusCircle } from "react-icons/fa";
+import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
 
 function Meetings() {
-  const ContexToken = Cookies.get("info_Authtoken");
-  const nameCookie = Cookies.get("name");
+  const { tokenVal } = useContext(AuthContext);
+  const ContexToken = tokenVal;
+  const navigate = useNavigate();
+
+  const { nameVal } = useContext(AuthContext);
+  const nameCookie = nameVal;
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
@@ -26,6 +31,9 @@ function Meetings() {
   // --------------------------- GET MEETING LIST --------------------------------
 
   useEffect(() => {
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -60,13 +68,12 @@ function Meetings() {
           setCompletedData(completedDates);
         })
         .catch((error) => {
-          console.log(ContexToken);
-          console.error(error);
+          // console.error(error);
         });
     } catch (error) {
       Navigate("/networkError");
     }
-  }, [ContexToken, apiUrl]);
+  }, [ContexToken, apiUrl, navigate]);
 
   // ---------------------------------------------------- DELETE DATA  ----------------------------------------
 
@@ -81,7 +88,9 @@ function Meetings() {
     setshowDeletemodal(true);
   };
   const handleDelete = async () => {
-
+    if (!Cookies.get("infoToken")) {
+      navigate("/");
+    }
     try {
       const config = {
         headers: {
@@ -128,13 +137,21 @@ function Meetings() {
   };
 
   const title = "Meetings";
-  const path = "/home";
+  const path = "/home/*";
 
   const [selectedOption, setSelectedOption] = useState("");
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
   };
-  // console.log(upcomingdata);
+
+  // Create a list for upcoming list of the logged user
+  const userUpcomingList = [];
+  for (let i = 0; i < upcomingdata.length; i++) {
+    if (upcomingdata[i].booked_by === nameCookie) {
+      const item = upcomingdata[i];
+      userUpcomingList.push(item);
+    }
+  }
 
   const getContent = () => {
     if (selectedOption === "completed") {
@@ -213,8 +230,8 @@ function Meetings() {
       );
     } else {
       return upcomingdata.length !== 0 ? (
-        upcomingdata.map((item) =>
-          nameCookie === "Admin" ? (
+        nameCookie === "Admin" ? (
+          upcomingdata.map((item) => (
             <div
               className=" overflow-hidden shadow-lg p-4 rounded-md bg-gray-200 lg:bg-gray-700 md:bg-gray-700"
               key={item.id}
@@ -269,44 +286,46 @@ function Meetings() {
                 </button>
               </div>
             </div>
-          ) : item.booked_by === nameCookie ? (
+          ))
+        ) : userUpcomingList.length !== 0 ? (
+          userUpcomingList.map((item) => (
             <div
               className=" overflow-hidden shadow-lg p-4 rounded-md bg-gray-200 lg:bg-gray-700 md:bg-gray-700"
               key={item.id}
             >
-              <div className="grid grid-cols-2 text-gray-500 lg:text-gray-300 text-sm sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
+              <div className="grid grid-cols-2 text-sm text-gray-500 lg:text-gray-300 md:text-gray-300 sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
                 <div>Agenda</div>
                 <div>{item.agenda}</div>
               </div>
 
-              <div className="grid grid-cols-2 text-gray-500 lg:text-gray-300 text-sm sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
+              <div className="grid grid-cols-2 text-sm text-gray-500 lg:text-gray-300 md:text-gray-300 sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
                 <div>Hall</div>
                 <div>{item.hall}</div>
               </div>
 
-              <div className="grid grid-cols-2 text-gray-500 lg:text-gray-300 text-sm sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
+              <div className="grid grid-cols-2 text-sm text-gray-500 lg:text-gray-300  md:text-gray-300 sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
                 <div>Date</div>
                 <div>{item.date}</div>
               </div>
 
-              <div className="grid grid-cols-2 text-gray-500 lg:text-gray-300 text-sm sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
+              <div className="grid grid-cols-2 text-sm text-gray-500 lg:text-gray-300 md:text-gray-300 sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
                 <div>Time</div>
-                <div>{item.timestr}</div>
+                <div> {item.timestr} </div>
               </div>
 
-              <div className="grid grid-cols-2 text-gray-500 lg:text-gray-300 text-sm sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
+              <div className="grid grid-cols-2 text-sm text-gray-500 lg:text-gray-300 md:text-gray-300 sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
                 <div>Booked By</div>
                 <div>{item.booked_by}</div>
               </div>
 
-              <div className="grid grid-cols-2 text-gray-500 lg:text-gray-300 text-sm sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
+              <div className="grid grid-cols-2 text-sm text-gray-500 lg:text-gray-300 md:text-gray-300 sm:text-sm md:text-sm lg:text-md xl:text-md text-left font-medium py-0.5">
                 <div>Department</div>
                 <div>{item.department}</div>
               </div>
 
               <div className="flex px-6 text-center gap-2 text-sm justify-center p-4">
                 {/* <Link to="/editmeeting" state={item}>
-                  <button className="flex gap-1 py-1 text-sm items-center hover:text-white bg-blue-800 hover:bg-blue-600 text-white px-3 rounded shadow justify-center">
+                  <button className="flex gap-1 py-1 text-sm items-center bg-blue-800 hover:bg-blue-600 hover:text-white text-white lg:text-gray-300 px-3 rounded shadow justify-center">
                     Edit
                   </button>
                   <Routes>
@@ -318,17 +337,17 @@ function Meetings() {
                 </Link> */}
                 <button
                   onClick={() => openDeleteModal(item.id)}
-                  className="flex gap-1 py-1 items-center text-sm hover:text-white bg-blue-800 hover:bg-blue-600 text-white px-3 rounded shadow justify-center"
+                  className="flex gap-1 py-1 text-sm items-center bg-blue-800 hover:text-white hover:bg-blue-600 text-white lg:text-gray-300 px-3 rounded shadow justify-center"
                 >
                   Delete
                 </button>
               </div>
             </div>
-          ) : (
-            <p className="text-sm text-left px-2 lg:text-gray-300">
-              No meetings found...
-            </p>
-          )
+          ))
+        ) : (
+          <p className="text-sm text-left px-2 lg:text-gray-300">
+            No meetings found...
+          </p>
         )
       ) : (
         <p className="text-sm text-left px-2 lg:text-gray-300">
