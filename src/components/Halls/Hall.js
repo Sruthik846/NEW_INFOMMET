@@ -14,11 +14,11 @@ import Cookies from "js-cookie";
 function Hall() {
   const { tokenVal } = useContext(AuthContext);
   const ContexToken = tokenVal;
+  const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
   const imageErrorUrl = process.env.PUBLIC_URL + "/animation_lkji4e3e.mp4";
-  const navigate = useNavigate();
 
   const [showDeletemodal, setshowDeletemodal] = useState(false);
   const [hallList, setHallList] = useState([]);
@@ -84,7 +84,7 @@ function Hall() {
         .delete(`${apiUrl}/api/hall/${selectedItemId}`, config)
         .then((response) => {
           deleteDictById(selectedItemId);
-          setshowsuccessMessage(response.data["message"]);
+          // setshowsuccessMessage(response.data["message"]);
         })
         .catch((error) => {
           setshowerrorMessage(error.response["data"]);

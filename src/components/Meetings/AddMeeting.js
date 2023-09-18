@@ -89,7 +89,7 @@ function AddMeeting() {
   }, [ContexToken, apiUrl, navigate]);
 
   const handleButtonClick = (value) => {
-    // If already exists remove it from the list
+    // If already exists remove it 
     if (selectedButtons.includes(value)) {
       setSelectedButtons(selectedButtons.filter((button) => button !== value));
     } else {
@@ -97,7 +97,9 @@ function AddMeeting() {
       setSelectedButtons([...selectedButtons, value]);
     }
   };
+  // console.log(selectedButtons);
 
+  
   const [formData, setFormData] = useState({
     agenda: "",
     hall: "",
@@ -111,6 +113,7 @@ function AddMeeting() {
 
   if (formData.hall && formData.date) {
     // console.log(formData.hall, formData.date);
+    // to check entered hall and date have selected slots
     const matchingDict = meetingList.filter(
       (dict) => dict.hall === formData.hall && dict.date === formData.date
     );
@@ -119,7 +122,7 @@ function AddMeeting() {
     }
   }
   // console.log(alreadySelectedSlots);
-  // selected time slots to a single list
+  // selected time slots to a single list ( not available )
   const notAvailableSlots = alreadySelectedSlots.reduce(
     (accumulator, currentArray) => {
       return accumulator.concat(currentArray);
@@ -146,8 +149,10 @@ function AddMeeting() {
     newUser.if_id = ifidCookie;
     newUser.booked_by = nameCookie;
     newUser.department = deptCookie;
+    // console.log(newUser);
 
     try {
+
       axios
         .post(`${apiUrl}/api/booking`, newUser, {
           headers: {
