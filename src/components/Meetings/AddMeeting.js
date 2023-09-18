@@ -62,6 +62,7 @@ function AddMeeting() {
   }, [ContexToken, apiUrl, navigate]);
 
   // --------------------------- GET MEETING LIST --------------------------------
+  // For to take selected time slots
   useEffect(() => {
     try {
       if (!Cookies.get("infoToken")) {

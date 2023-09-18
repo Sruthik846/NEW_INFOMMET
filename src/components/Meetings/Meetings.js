@@ -45,14 +45,14 @@ function Meetings() {
         .get(`${apiUrl}/api/meeting-list`, config)
         .then((response) => {
           // convert date from datetime & save to updatedta
-
           const updatedList = response.data.map((item) => {
-            const dateOnly = item.date.split("T")[0];
-            const timeList = item.time.join(", ");
+            const dateOnly = item.date.split("T")[0]; // dates only
+            const timeList = item.time.join(", "); 
             return { ...item, date: dateOnly, timestr: timeList };
           });
           setUpdateData(updatedList);
-          const currentDate = new Date().toISOString().split("T")[0]; // Get current date
+           // Get current date for splitting all data to upcoming and completed
+          const currentDate = new Date().toISOString().split("T")[0];
 
           const upcomingDates = [];
           const completedDates = [];
@@ -74,6 +74,7 @@ function Meetings() {
       Navigate("/networkError");
     }
   }, [ContexToken, apiUrl, navigate]);
+
 
   // ---------------------------------------------------- DELETE DATA  ----------------------------------------
 

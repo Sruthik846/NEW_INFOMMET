@@ -15,6 +15,7 @@ const AuthProvider = ({ children }) => {
   const [userVal, setuserType] = useState("");
 
   useEffect(() => {
+    // Decrypt data from cookies, saved to var and passed this cookie values to all components
     if (Cookies.get("infoToken")) {
       const tokenData = Cookies.get("infoToken");
       // Decrypting data
@@ -30,10 +31,8 @@ const AuthProvider = ({ children }) => {
       setemail(emailVal);
 
       const passwordData = Cookies.get("Password");
-      const passwordVal = CryptoJS.AES.decrypt(
-        passwordData,
-        "secret-key"
-      ).toString(CryptoJS.enc.Utf8);
+      const passwordVal = CryptoJS.AES.decrypt( passwordData,"secret-key").toString(
+        CryptoJS.enc.Utf8);
       setpassword(passwordVal);
 
       const nameData = Cookies.get("Name");
@@ -67,17 +66,15 @@ const AuthProvider = ({ children }) => {
     if (!Cookies.get("infoToken")) {
       // To check user exist
       if (Cookies.get("Email") && Cookies.get("Password")) {
-        // if exist, regenerated token using login credentials
+        // if exist regenerate token using login credentials ( stored in cookie )
         const emailData = Cookies.get("Email");
         const email = CryptoJS.AES.decrypt(emailData, "secret-key").toString(
           CryptoJS.enc.Utf8
         );
 
         const passwordData = Cookies.get("Password");
-        const password = CryptoJS.AES.decrypt(
-          passwordData,
-          "secret-key"
-        ).toString(CryptoJS.enc.Utf8);
+        const password = CryptoJS.AES.decrypt(passwordData,"secret-key").toString(
+          CryptoJS.enc.Utf8);
 
         const newUser = {
           email,
@@ -111,7 +108,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // Expire token after 2 hour, so go to handleTokenExpiration() to create new token
+  // Token expire after 2 hour, go to handleTokenexpiration() and regenerate new token
   useEffect(() => {
     const tokenExpirationTimeout = setTimeout(() => {
       handleTokenExpiration();
@@ -122,17 +119,11 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  const updateToken = async (newToken) => {
-    setToken(newToken);
-    const tokanVal = CryptoJS.AES.encrypt(newToken, "secret-key").toString();
-    Cookies.set("infoToken", tokanVal);
-  };
 
   return (
     <AuthContext.Provider
       value={{
         tokenVal,
-        updateToken,
         deptVal,
         ifidVal,
         nameVal,

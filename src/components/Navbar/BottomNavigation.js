@@ -8,11 +8,11 @@ import { AuthContext } from "../Context/Context";
 import { useContext } from "react";
 
 function BottomNavigation() {
-  const { nameCookie } = useContext(AuthContext);
-
+  const { nameVal } = useContext(AuthContext);
+  
   return (
     <div className="md:hidden font-sans">
-      {nameCookie === "Admin" ? (
+      {nameVal === "Admin" ? (
         <div className="bottom-navigation bg-white flex fixed justify-between shadow-lg text-center py-1">
           <Link to="/home/*" className="text-gray-700 px-6">
             <div className="relative">
