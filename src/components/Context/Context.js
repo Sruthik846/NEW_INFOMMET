@@ -18,7 +18,6 @@ const AuthProvider = ({ children }) => {
     // Decrypt data from cookies, saved to var and passed this cookie values to all components
     if (Cookies.get("infoToken")) {
       const tokenData = Cookies.get("infoToken");
-      // Decrypting data
       const tokenVal = CryptoJS.AES.decrypt(tokenData, "secret-key").toString(
         CryptoJS.enc.Utf8
       );

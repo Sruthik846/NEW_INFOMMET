@@ -61,6 +61,7 @@ function AddMeeting() {
     }
   }, [ContexToken, apiUrl, navigate]);
 
+
   // --------------------------- GET MEETING LIST --------------------------------
   // For to take selected time slots
   useEffect(() => {
@@ -75,7 +76,7 @@ function AddMeeting() {
         },
       };
       axios.get(`${apiUrl}/api/meeting-list`, config).then((response) => {
-        // convert date from datetime & save to updatedta
+        // convert date from datetime & save to updatedata
         const updatedList = response.data.map((item) => {
           const dateOnly = item.date.split("T")[0];
           return { ...item, date: dateOnly };

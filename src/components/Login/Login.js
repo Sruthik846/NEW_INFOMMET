@@ -41,11 +41,12 @@ function Login() {
         .then((response) => {
           const token = response.data["token"];
 
-          // Cookie creation
+          // encrypt data and stored to cookie
           const expirationTime = new Date();
-          expirationTime.setHours(expirationTime.getHours() + 1);
+          expirationTime.setHours(expirationTime.getHours() + 2);
 
-          const tokanVal = CryptoJS.AES.encrypt(token, "secret-key").toString(); // encrypt data to store cookie
+          const tokanVal = CryptoJS.AES.encrypt(
+            token, "secret-key").toString(); 
           Cookies.set("infoToken", tokanVal, {
             expires: expirationTime,
           });

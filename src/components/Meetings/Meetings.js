@@ -44,6 +44,7 @@ function Meetings() {
       axios
         .get(`${apiUrl}/api/meeting-list`, config)
         .then((response) => {
+
           // convert date from datetime & save to updatedta
           const updatedList = response.data.map((item) => {
             const dateOnly = item.date.split("T")[0]; // dates only
@@ -154,6 +155,7 @@ function Meetings() {
     }
   }
 
+  // Call this function inside return, completed and upcoming data 
   const getContent = () => {
     if (selectedOption === "completed") {
       return completedData.map((item) =>
