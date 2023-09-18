@@ -37,15 +37,12 @@ function AddHall() {
     floor: "",
     building: "",
   });
-
   const { hall, floor, building } = formData;
-
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
     if (!Cookies.get("infoToken")) {
       navigate("/");
     }
@@ -74,6 +71,7 @@ function AddHall() {
     }
   };
 
+  // pass to topnav
   const title = "Add Hall";
   const path = "/hall";
 
@@ -81,6 +79,7 @@ function AddHall() {
     <div className="font-sans bg-white h-screen">
       <TopNav data={title} path={path}></TopNav>
 
+      {/* Success message */}
       {showsuccessMessage ? (
         <div
           className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none p-6 md:p-8 lg:p-12 xl:p-16"
@@ -117,6 +116,7 @@ function AddHall() {
         </div>
       ) : null}
 
+      {/* Error message */}
       {showerrorMessage.length !== 0 ? (
         <div
           className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none p-6 md:p-8 lg:p-12 xl:p-16"
@@ -170,7 +170,11 @@ function AddHall() {
           <div className=" font-bold px-2">ADD HALL</div>
         </div>
 
-        <form className="space-y-6 p-6 py-20" name="addHallForm" onSubmit={(e) => onSubmit(e)}>
+        <form
+          className="space-y-6 p-6 py-20"
+          name="addHallForm"
+          onSubmit={(e) => onSubmit(e)}
+        >
           <center>
             <div className="flex w-full md:w-1/4 items-center bg-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-opacity-40 mb-4 px-2">
               <input

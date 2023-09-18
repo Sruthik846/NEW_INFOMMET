@@ -28,15 +28,11 @@ import {
   Navigate,
 } from "react-router-dom";
 
-
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [restrictedLink, setLink] = useState(false);
   const [token, setToken] = useState("");
   const [userType, setuserType] = useState("");
-  // const [restrictedLinks, setrestrictedLinks] = useState([])
-
-  
 
   useEffect(() => {
     if (Cookies.get("infoToken")) {
@@ -49,7 +45,7 @@ function App() {
       const userType = CryptoJS.AES.decrypt(userData, "secret-key").toString(
         CryptoJS.enc.Utf8
       );
-      setuserType(userType);     
+      setuserType(userType);
     }
   }, []);
 
@@ -58,10 +54,8 @@ function App() {
     admin: [],
   };
 
-
   if (userType && !restrictedLink) {
-    const hasRestrictedLinks =
-      userType && restrictedLinks[userType].length > 0;
+    const hasRestrictedLinks = userType && restrictedLinks[userType].length > 0;
     if (hasRestrictedLinks !== false) {
       setLink(true);
     }
@@ -74,10 +68,8 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-
   return (
     <div className="App">
-      {/* <AuthContextProvider> */}
       <CookiesProvider>
         <CookieMonitorMiddleware>
           <Provider store={store}>

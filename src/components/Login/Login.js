@@ -18,7 +18,6 @@ function Login() {
     password: "",
   });
   const { email, password } = formData;
-
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 

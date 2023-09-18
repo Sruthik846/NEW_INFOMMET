@@ -18,12 +18,10 @@ function Home() {
   }
 
   const userTypeCooklie = userVal;
-
   const restrictedLinks = {
     user: ["/users", "/hall"],
     admin: [],
   };
-
   const hasRestrictedLinks =
     userTypeCooklie && restrictedLinks[userTypeCooklie].length > 0;
 

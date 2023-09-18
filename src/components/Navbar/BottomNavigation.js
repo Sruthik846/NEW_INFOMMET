@@ -9,7 +9,7 @@ import { useContext } from "react";
 
 function BottomNavigation() {
   const { nameCookie } = useContext(AuthContext);
-  
+
   return (
     <div className="md:hidden font-sans">
       {nameCookie === "Admin" ? (

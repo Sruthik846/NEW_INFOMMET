@@ -7,17 +7,17 @@ import Users from "./Users";
 import { AuthContext } from "../Context/Context";
 import Cookies from "js-cookie";
 import {
-  faPencil,
-  faEnvelope,
-  faCircleArrowLeft,
-} from "@fortawesome/free-solid-svg-icons";
-import {
   Route,
   Link,
   Routes,
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import {
+  faPencil,
+  faEnvelope,
+  faCircleArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 
 function EditUser() {
   const { tokenVal } = useContext(AuthContext);

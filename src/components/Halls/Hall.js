@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 
 function Hall() {
   const { tokenVal } = useContext(AuthContext);
-
+  const ContexToken = tokenVal;
   const apiUrl = process.env.REACT_APP_API_URL;
   const imageDeleteUrl = process.env.PUBLIC_URL + "/animation_lkhxitqq.mp4";
   const imageUrl = process.env.PUBLIC_URL + "/animation_lkhv4mhb.mp4";
@@ -28,7 +28,7 @@ function Hall() {
   const [showAddHall, setshowAddHall] = React.useState(false);
   const [selectedEditItemId, setSelectedEditItemId] = useState(null);
   const [showEditHall, setshowEditHall] = React.useState(false);
-  const ContexToken = tokenVal;
+
 
   // GET DATA
   useEffect(() => {
@@ -54,6 +54,7 @@ function Hall() {
       navigate("/networkError");
     }
   }, [ContexToken, apiUrl, navigate]);
+
 
   // --------------------------------- DELETE HALL -------------------------------------
   const deleteDictById = (id) => {
@@ -93,6 +94,7 @@ function Hall() {
       navigate("/networkError");
     }
   };
+
 
   // ----------------------- CREATE HALL ------------------------------------------------------------------
   const [formData, setFormData] = useState({
@@ -139,6 +141,7 @@ function Hall() {
       navigate("/networkError");
     }
   };
+
 
   // ---------------------------------- EDIT HALL -------------------------------------------------
   const updateDictionary = (id, updatedData) => {
@@ -195,6 +198,7 @@ function Hall() {
     setshowerrorMessage([]);
   };
 
+  // Pass to navbar
   const title = "Hall";
   const path = "/home/*";
 
